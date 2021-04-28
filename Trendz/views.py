@@ -4,18 +4,28 @@ from .forms import ContactForm, CreateUserForm
 from .models import Contact
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import authenticate, login ,logout
+from django.contrib.auth import authenticate, login, logout
+from .scrap import scrapmobilelist, scrapmobiledetail
 
 # Create your views here.
+
+
 def home(request):
     return render(request, "Trendz/home.html")
 
+
 def compare(request):
     return render(request, "Trendz/comp-product.html")
+
+
 def trend(request):
     return render(request, "Trendz/top-trndz.html")
+
+
 def rated(request):
     return render(request, "Trendz/rat-product.html")
+
+
 def contact(request):
     if request.method == 'POST':
         fm = ContactForm(request.POST)
@@ -29,6 +39,7 @@ def contact(request):
     else:
         fm = ContactForm()
     return render(request, "Trendz/contact.html", {'form': fm})
+
 
 def loginpage(request):
 
@@ -45,26 +56,40 @@ def loginpage(request):
             messages.info(request, 'Usrname or Password is incorrect ')
 
     context = {}
-    return render(request,"Trendz/login.html", context)
+    return render(request, "Trendz/login.html", context)
+
 
 def logoutuser(request):
     logout(request)
     return redirect('home')
 
-def signuppage(request):
 
+def signuppage(request):
 
     form = CreateUserForm()
     if request.method == 'POST':
         form = CreateUserForm(request.POST)
         if form.is_valid():
             form.save()
-            
+
             user = form.cleaned_data.get('username')
             messages.success(request, 'Account was created for ' + user)
 
             return redirect('login')
 
-
-    context = {'form':form}
+    context = {'form': form}
     return render(request, "Trendz/signup.html", context)
+
+
+def devicelistpage(request, brand_name):
+    
+    devices = scrapmobilelist(brand_name)
+
+    return render(request, "Trendz/devicelist.html", {'devices':devices})
+
+
+def phonedetailpage(request, device_name):
+
+    context = scrapmobiledetail(device_name)
+
+    return render(request, "Trendz/phonedetail.html", context)
