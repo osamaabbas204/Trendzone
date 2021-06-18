@@ -1,0 +1,188 @@
+{% extends "Trendz/main.html" %} {% block title %} Trendzone {% endblock %} {% block style %}
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: "Open Sans", sans-serif;
+    color: #303f4a;
+  }
+  .title-more {
+    display: flex;
+  }
+  .product-item {
+    border: 1px solid rgba(80, 104, 122, 0.11);
+    border-radius: 6px;
+    display: flex;
+    width: 180px;
+    height: 300px;
+    list-style: none;
+    flex-direction: column;
+    text-decoration: none;
+    background-color: transparent;
+    margin-right: 25px;
+  }
+  .image {
+    display: flex;
+    justify-content: center;
+  }
+  .status {
+    font-size: 11px;
+    color: #a80500;
+    text-align: center;
+    margin-top: 0px;
+    font-weight: 600;
+  }
+  .brand-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: #303f4a;
+    text-align: center;
+    overflow: hidden;
+    line-height: 1.5em;
+    height: 3em;
+  }
+  .price {
+    text-align: center;
+    font-size: 16px;
+    color: #303f4a;
+  }
+  .price span {
+    color: #0984e3;
+    font-weight: 700;
+  }
+</style>
+{% endblock style %} {% block body %}
+<div class="container">
+  <h3>Mobile</h3>
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+    {% for wish in wishlist %} {% if wish.mobile %}
+    <div class="product-item">
+      <div class="image">
+        <a href="{% url 'phonedetail' wish.mobile.tag %}"> <img height="199px" width="149px" src="{{wish.mobile.image}}" alt="Nothing Show" /></a>
+        <div class="cross-mobile" data-id="{{wish.mobile.id}}">
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </div>
+      </div>
+      {% if wish.mobile.status == "None" %} {%else%}
+      <div class="status">{{wish.mobile.status}}</div>
+      {% endif %}
+      <a style="text-decoration: none" href="{% url 'phonedetail' wish.mobile.tag %}"> <div class="brand-name">{{wish.mobile.title}}</div></a>
+      <div class="price"><span>{{ wish.mobile.price }}</span>RS</div>
+    </div>
+    {% endif %} {% endfor %}
+  </div>
+</div>
+<div class="container">
+  <h3>Laptop</h3>
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+    {% for wish in wishlist %} {% if wish.laptop %}
+    <div class="product-item">
+      <div class="image">
+        <a href="{% url 'phonedetail' wish.laptop.tag1 %}"> <img height="199px" width="149px" src="{{wish.laptop.image}}" alt="Nothing Show" /></a>
+        <div class="cross-laptop" data-id="{{wish.laptop.id}}">
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </div>
+      </div>
+      <a style="text-decoration: none" href="{% url 'phonedetail' wish.laptop.tag1 %}"> <div class="brand-name">{{wish.laptop.title}}</div></a>
+      <div class="price"><span>{{ wish.laptop.price }}</span>RS</div>
+    </div>
+    {% endif %} {% endfor %}
+  </div>
+</div>
+{% endblock %} {% block script %}
+<script>
+  function refreshPage() {
+    location.reload(true);
+  }
+  function senddata(mobile) {
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          // Does this cookie string begin with the name we want?
+          if (cookie.substring(0, name.length + 1) === name + "=") {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+    const csrftoken = getCookie("csrftoken");
+
+    $.ajax({
+      url: "/wishlistdata",
+      type: "POST",
+      data: {
+        Mobile: mobile,
+      },
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+      },
+      success: function (data) {
+        console.log(data);
+        setInterval("refreshPage()", 1000);
+      },
+      error: function (error) {
+        console.log(error);
+      },
+    });
+  }
+
+  function dataLaptop(laptop) {
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          // Does this cookie string begin with the name we want?
+          if (cookie.substring(0, name.length + 1) === name + "=") {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+    const csrftoken = getCookie("csrftoken");
+
+    $.ajax({
+      url: "/wishlistdata",
+      type: "POST",
+      data: {
+        Laptop: laptop,
+      },
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+      },
+      success: function (data) {
+        console.log(data);
+        setInterval("refreshPage()", 1000);
+      },
+      error: function (error) {
+        console.log(error);
+      },
+    });
+  }
+
+  let crossbutton = document.getElementsByClassName("cross-mobile");
+  for (let item of crossbutton) {
+    item.addEventListener("click", function () {
+      let wishlistId = this.dataset.id;
+      senddata(wishlistId);
+    });
+  }
+
+  let crossbutton1 = document.getElementsByClassName("cross-laptop");
+  for (let item of crossbutton1) {
+    item.addEventListener("click", function () {
+      let wishlistId = this.dataset.id;
+      dataLaptop(wishlistId);
+    });
+  }
+</script>
+{% endblock script %}

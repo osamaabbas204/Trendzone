@@ -1,423 +1,622 @@
-{% extends "Trendz/index.html" %}
-{% load static %}
+{% extends "Trendz/main.html" %} {% load static %} {% load humanize %}
+
+<!–– and the comment closes with ––>
+
 {% block style %}
-<link rel="stylesheet" href="{% static '/css/phonedetail.css' %}">
-{% endblock style %}
+<style>
+  .comment-title {
+    font-size: 20px;
+    color: #0984e3;
+    font-weight: 600;
+    margin: 0;
+  }
+  .review-name {
+    color: rgba(48, 63, 74, 0.75);
+    font-size: 15px;
+    line-height: 18px;
+  }
+  .review-title {
+    color: #0984e3;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 25px;
+  }
+</style>
+<link rel="stylesheet" href="{% static '/css/phonedetail.css' %}" />
+{% endblock %} {% block title %} Trendzone {% endblock %} {% block body %}
 
-{% block title %}
-Trendzone
-{% endblock %}
-{% block body %}
-
-<div class="container">
-    <div class="row">
-        <div class="col-md-6 text-center">
-            <img src="{{image}}">
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-6 text-center">
+      <div class="row justify-content-end">
+        <div class="col-3">
+          {% if wishlist %}
+          <button id="Wishlist-btn" data-user="{{user.id}}" data-mobile="{{mobile.id}}" type="sumbit" class="btn btn-success btn-sm active">Wishlist</button>
+          {% else %}
+          <button id="Wishlist-btn" data-user="{{user.id}}" data-mobile="{{mobile.id}}" type="sumbit" class="btn btn-primary btn-sm">Wishlist</button>
+          {% endif %}
         </div>
-        <div class="col-md-6">
-            <div class="row ">
-                <div class="col">
-                    <!--<div class="like liked" data-id="10620" title="Remove this from wishlist.">
+      </div>
+      <img
+        src="
+            {% if image %}
+            {{image}}
+            {% elif image_mega %}
+            {{image_mega}}
+            {% endif %}"
+      />
+    </div>
+    <div class="col-md-6">
+      <div class="row">
+        <div class="col">
+          <!--<div class="like liked" data-id="10620" title="Remove this from wishlist.">
                         <i class="fa fa-star"></i>
                     </div>-->
-                    <h3 class="title"><strong>{{title}}</strong></h3>
-                    <div>
-                        <span class="price">{{price}}</span> <small>RS</small>
-                    </div>
-                    <div class="rating">
-                        <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-                            class="fa fa-star"></i><i class="fa fa-star-o"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <ul class="list-unstyled row mx-0" style="width: fit-content;">
-                        <li class="col-6 p-0">
-                            <div class="row spec-wr mx-0">
-                                <div class="col-2 spec-ic p-0">
-                                    <img width="50" height="50"
-                                        src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/camera-grp.png"
-                                        class="lazyloaded" data-ll-status="loaded"><noscript><img width="50" height="50"
-                                            src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/camera-grp.png"></noscript>
-                                </div>
-                                <div class="col spec-dt">
-                                    <span style="color: #303f4a; font-size: 16px;">{{specs_list.0}}</span> Camera
-                                </div>
-                            </div>
-                        </li>
-                        <li class="col-6 p-0">
-                            <div class="row spec-wr mx-0">
-                                <div class="col-2 spec-ic p-0">
-                                    <img width="50" height="50"
-                                        src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/processor-grp.png"
-                                        class="lazyloaded" data-ll-status="loaded"><noscript><img width="50" height="50"
-                                            src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/processor-grp.png"></noscript>
-                                </div>
-                                <div class="col spec-dt">
-                                    <span style="color: #303f4a; font-size: 16px;">{{specs_list.1}}</span> Processor
-                                </div>
-                            </div>
-                        </li>
-                        <li class="col-6 p-0">
-                            <div class="row spec-wr mx-0">
-                                <div class="col-2 spec-ic p-0">
-                                    <img width="50" height="50"
-                                        src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/storage-grp.png"
-                                        class="lazyloaded" data-ll-status="loaded"><noscript><img width="50" height="50"
-                                            src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/storage-grp.png"></noscript>
-                                </div>
-                                <div class="col spec-dt">
-                                    <span style="color: #303f4a; font-size: 16px;">{{specs_list.2}}</span> Internal
-                                    Storage
-                                </div>
-                            </div>
-                        </li>
-                        <li class="col-6 p-0">
-                            <div class="row spec-wr mx-0">
-                                <div class="col-2 spec-ic p-0">
-                                    <img width="50" height="50"
-                                        src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/battery-grp.png"
-                                        class="lazyloaded" data-ll-status="loaded"><noscript><img width="50" height="50"
-                                            src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/battery-grp.png"></noscript>
-                                </div>
-                                <div class="col spec-dt">
-                                    <span style="color: #303f4a; font-size: 16px;">{{specs_list.3}}</span> Battery
-                                </div>
-                            </div>
-                        </li>
-                        <li class="col-6 p-0">
-                            <div class="row spec-wr mx-0">
-                                <div class="col-2 spec-ic p-0">
-                                    <img width="50" height="50"
-                                        src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/ram-grp.png"
-                                        class="lazyloaded" data-ll-status="loaded"><noscript><img width="50" height="50"
-                                            src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/ram-grp.png"></noscript>
-                                </div>
-                                <div class="col spec-dt">
-                                    <span style="color: #303f4a; font-size: 16px;">{{specs_list.4}}</span> Memory (RAM)
-                                </div>
-                            </div>
-                        </li>
-                        <li class="col-6 p-0">
-                            <div class="row spec-wr mx-0">
-                                <div class="col-2 spec-ic p-0">
-                                    <img width="50" height="50"
-                                        src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/display-grp.png"
-                                        class="lazyloaded" data-ll-status="loaded"><noscript><img width="50" height="50"
-                                            src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/display-grp.png"></noscript>
-                                </div>
-                                <div class="col spec-dt">
-                                    <span style="color: #303f4a; font-size: 16px;">{{specs_list.5}}</span> Display
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+          <h3 class="title">
+            <strong> {% if title %} {{title}} {% elif title_mega %} {{title_mega}} {%endif %}</strong>
+          </h3>
+          <div>
+            <span class="price"> {% if price %} {{price}} {% elif price_mega %} {{price_mega}} {%endif %} </span>
+            <small>RS</small>
+          </div>
+          <div class="rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i></div>
         </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <ul class="list-unstyled row mx-0" style="width: fit-content">
+            <li class="col-6 p-0">
+              <div class="row spec-wr mx-0">
+                <div class="col-2 spec-ic p-0">
+                  <img width="50" height="50" src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/camera-grp.png" class="lazyloaded" data-ll-status="loaded" /><noscript
+                    ><img width="50" height="50" src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/camera-grp.png"
+                  /></noscript>
+                </div>
+                <div class="col spec-dt">
+                  <span style="color: #303f4a; font-size: 16px">{{specs_list.camera}}</span>
+                  Camera
+                </div>
+              </div>
+            </li>
+            <li class="col-6 p-0">
+              <div class="row spec-wr mx-0">
+                <div class="col-2 spec-ic p-0">
+                  <img width="50" height="50" src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/processor-grp.png" class="lazyloaded" data-ll-status="loaded" /><noscript
+                    ><img width="50" height="50" src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/processor-grp.png"
+                  /></noscript>
+                </div>
+                <div class="col spec-dt">
+                  <span style="color: #303f4a; font-size: 16px">{{specs_list.processor}}</span>
+                  Processor
+                </div>
+              </div>
+            </li>
+            <li class="col-6 p-0">
+              <div class="row spec-wr mx-0">
+                <div class="col-2 spec-ic p-0">
+                  <img width="50" height="50" src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/storage-grp.png" class="lazyloaded" data-ll-status="loaded" /><noscript
+                    ><img width="50" height="50" src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/storage-grp.png"
+                  /></noscript>
+                </div>
+                <div class="col spec-dt">
+                  <span style="color: #303f4a; font-size: 16px">{{specs_list.internal_storage}}</span>
+                  Internal Storage
+                </div>
+              </div>
+            </li>
+            <li class="col-6 p-0">
+              <div class="row spec-wr mx-0">
+                <div class="col-2 spec-ic p-0">
+                  <img width="50" height="50" src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/battery-grp.png" class="lazyloaded" data-ll-status="loaded" /><noscript
+                    ><img width="50" height="50" src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/battery-grp.png"
+                  /></noscript>
+                </div>
+                <div class="col spec-dt">
+                  <span style="color: #303f4a; font-size: 16px">{{specs_list.battery}}</span>
+                  Battery
+                </div>
+              </div>
+            </li>
+            <li class="col-6 p-0">
+              <div class="row spec-wr mx-0">
+                <div class="col-2 spec-ic p-0">
+                  <img width="50" height="50" src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/ram-grp.png" class="lazyloaded" data-ll-status="loaded" /><noscript
+                    ><img width="50" height="50" src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/ram-grp.png"
+                  /></noscript>
+                </div>
+                <div class="col spec-dt">
+                  <span style="color: #303f4a; font-size: 16px">{{specs_list.ram}}</span>
+                  Memory (RAM)
+                </div>
+              </div>
+            </li>
+            <li class="col-6 p-0">
+              <div class="row spec-wr mx-0">
+                <div class="col-2 spec-ic p-0">
+                  <img width="50" height="50" src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/display-grp.png" class="lazyloaded" data-ll-status="loaded" /><noscript
+                    ><img width="50" height="50" src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/display-grp.png"
+                  /></noscript>
+                </div>
+                <div class="col spec-dt">
+                  <span style="color: #303f4a; font-size: 16px">{{specs_list.display}}</span>
+                  Dispaly
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
+
 <div class="container">
-    <div class="row">
-        <div class="col-md-8">
-
-            <div class="specifications-details-inner border ">
-                <div class="py-2">
-                    <h2 class="phone-title">{{title}}</h2>
-                    <h3 class="phone-title-spec">Specifications </h3>
-                </div>
-                <div class="table-responsive">
-                    <table class="table mb-2  ">
-                        <tbody>
-                            <tr>
-                                <td>{{data_list.0}}</td>
-                                <td>
-                                    Rs. {{price}}/- </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="table-responsive">
-                    <h6 class="card-title">
-                        Network
-                    </h6>
-                    <table class="table mb-1">
-                        <tbody>
-                            <tr>
-                                <td>{{data_list.2}}</td>
-                                <td>{{data_list.3}}</td>
-                            </tr>
-                            <tr>
-                                <td>{{data_list.4}}</td>
-                                <td>{{data_list.5}}</td>
-                            </tr>
-                            <tr>
-                                <td>{{data_list.6}}</td>
-                                <td>{{data_list.7}}</td>
-                            </tr>
-                            <tr>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="table-responsive">
-                    <h6 class="card-title">
-                        Launch
-                    </h6>
-                    <table class="table mb-1">
-                        <tbody>
-                            <tr>
-                                <td>{{data_list.8}}</td>
-                                <td>{{data_list.9}}</td>
-                            </tr>
-                            <tr>
-                                <td>{{data_list.10}}</td>
-                                <td>{{data_list.11}}</td>
-                            </tr>
-                            <tr>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="table-responsive">
-                    <h6 class="card-title">
-                        Body
-                    </h6>
-                    <table class="table mb-1">
-                        <tbody>
-                            <tr>
-                                <td>{{data_list.12}}</td>
-                                <td>{{data_list.13}}</td>
-                            </tr>
-                            <tr>
-                                <td>{{data_list.14}}</td>
-                                <td>{{data_list.15}}</td>
-                            </tr>
-                            <tr>
-                                <td>{{data_list.16}}</td>
-                                <td>{{data_list.17}}</td>
-                            </tr>
-                            <tr>
-                                <td>{{data_list.18}}</td>
-                                <td>{{data_list.19}}</td>
-                            </tr>
-                            <tr>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="table-responsive">
-                    <h6 class="card-title">
-                        Display
-                    </h6>
-                    <table class="table mb-1">
-                        <tbody>
-                            <tr>
-                                <td>{{data_list.20}}</td>
-                                <td>{{data_list.21}}</td>
-                            </tr>
-                            <tr>
-                                <td>{{data_list.22}}</td>
-                                <td>{{data_list.23}}</td>
-                            </tr>
-                            <tr>
-                                <td>{{data_list.24}}</td>
-                                <td>{{data_list.25}}</td>
-                            </tr>
-                            <tr>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="table-responsive">
-                    <h6 class="card-title">
-                        Platform
-                    </h6>
-                    <table class="table mb-1">
-                        <tbody>
-                            <tr>
-                                <td>{{data_list.26}}</td>
-                                <td>{{data_list.27}}</td>
-                            </tr>
-                            <tr>
-                                <td>{{data_list.28}}</td>
-                                <td>{{data_list.29}}</td>
-                            </tr>
-                            <tr>
-                                <td>{{data_list.30}}</td>
-                                <td>{{data_list.31}}</td>
-                            </tr>
-                            <tr>
-                                <td>{{data_list.32}}</td>
-                                <td>{{data_list.33}}</td>
-                            </tr>
-                            <tr>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="table-responsive">
-                    <h6 class="card-title">
-                        Memory
-                    </h6>
-                    <table class="table mb-1">
-                        <tbody>
-                            <tr>
-                                <td>{{data_list.34}}</td>
-                                <td>{{data_list.35}}</td>
-                            </tr>
-                            <tr>
-                                <td>{{data_list.36}}</td>
-                                <td>{{data_list.37}}</td>
-                            </tr>
-                            <tr>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="table-responsive">
-                    <h6 class="card-title">
-                        Camera
-                    </h6>
-                    <table class="table mb-1">
-                        <tbody>
-                            <tr>
-                                <td>{{data_list.38}}</td>
-                                <td>{{data_list.39}}</td>
-                            </tr>
-                            <tr>
-                                <td>{{data_list.40}}</td>
-                                <td>{{data_list.41}}</td>
-                            </tr>
-                            <tr>
-                                <td>{{data_list.42}}</td>
-                                <td>{{data_list.43}}</td>
-                            </tr>
-                            <tr>
-                                <td>{{data_list.44}}</td>
-                                <td>{{data_list.45}}</td>
-                            </tr>
-                            <tr>
-                                <td>{{data_list.46}}</td>
-                                <td>
-                                    <ul class="list-unstyled">
-                                        <li>{{data_list.47}}</li>
-                                    </ul>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="table-responsive">
-                    <h6 class="card-title">
-                        Sound
-                    </h6>
-                    <table class="table mb-1">
-                        <tbody>
-                            <tr>
-                                <td>{{data_list.48}}</td>
-                                <td>{{data_list.49}}</td>
-                            </tr>
-                            <tr>
-                                <td>{{data_list.50}}</td>
-                                <td>{{data_list.51}}</td>
-                            </tr>
-                            <tr>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="table-responsive">
-                    <h6 class="card-title">
-                        COMMS
-                    </h6>
-                    <table class="table mb-1">
-                        <tbody>
-                            <tr>
-                                <td>{{data_list.52}}</td>
-                                <td>{{data_list.53}}</td>
-                            </tr>
-                            <tr>
-                                <td>{{data_list.54}}</td>
-                                <td>{{data_list.55}}</td>
-                            </tr>
-                            <tr>
-                                <td>{{data_list.56}}</td>
-                                <td>{{data_list.57}}</td>
-                            </tr>
-                            <tr>
-                                <td>{{data_list.58}}</td>
-                                <td>{{data_list.59}}</td>
-                            </tr>
-                            <tr>
-                                <td>{{data_list.60}}</td>
-                                <td>{{data_list.61}}</td>
-                            </tr>
-                            <tr>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="table-responsive">
-                    <h6 class="card-title">
-                        Features
-                    </h6>
-                    <table class="table mb-1">
-                        <tbody>
-                            <tr>
-                                <td>{{data_list.62}}</td>
-                                <td>{{data_list.63}}</td>
-                            </tr>
-                            <tr>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="table-responsive">
-                    <h6 class="card-title">
-                        Battery
-                    </h6>
-                    <table class="table mb-1">
-                        <tbody>
-                            <tr>
-                                <td>{{data_list.64}}</td>
-                                <td>{{data_list.65}}</td>
-                            </tr>
-                            <tr>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="table-responsive">
-                    <h6 class="card-title">
-                        Misc
-                    </h6>
-                    <table class="table mb-1">
-                        <tbody>
-                            <tr>
-                                <td>{{data_list.66}}</td>
-                                <td>{{data_list.67}}</td>
-                            </tr>
-                            <tr>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="table-responsive">
-                    <h6 class="card-title">
-                        Tests
-                    </h6>
-                    <table class="table mb-1">
-                        <tbody>
-                            <tr>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
+  <div class="row">
+    <div class="col-md-8">
+      <div class="specifications-details-inner border">
+        <div class="py-2">
+          <h2 class="phone-title">{{title}}</h2>
+          <h3 class="phone-title-spec">Specifications</h3>
         </div>
+        <div class="table-responsive">
+          <table class="table mb-2">
+            <tbody>
+              <tr>
+                <td>Price in Pakistan</td>
+                <td>Rs. {{price}}/-</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-responsive">
+          <h6 class="card-title">Network</h6>
+          <table class="table mb-1">
+            <tbody>
+              <tr>
+                <td>Technology</td>
+                <td>{{data_list.Technology}}</td>
+              </tr>
+              <tr>
+                <td>2G Bands</td>
+                <td>{{data_list.2GBands}}</td>
+              </tr>
+              <tr>
+                <td>3G Bands</td>
+                <td>{{data_list.3GBands}}</td>
+              </tr>
+              <tr>
+                <td>4G Bands</td>
+                <td>{{data_list.4GBands}}</td>
+              </tr>
+              <tr>
+                <td>5G Bands</td>
+                <td>{{data_list.5GBands}}</td>
+              </tr>
+              <tr>
+                <td>Speed</td>
+                <td>{{data_list.Speed}}</td>
+              </tr>
+              <tr>
+                <td>GPRS</td>
+                <td>{{data_list.GPRS}}</td>
+              </tr>
+              <tr>
+                <td>Edge</td>
+                <td>{{data_list.EDGE}}</td>
+              </tr>
+              <tr></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-responsive">
+          <h6 class="card-title">Launch</h6>
+          <table class="table mb-1">
+            <tbody>
+              <tr>
+                <td>Announced</td>
+                <td>{{data_list.Announced}}</td>
+              </tr>
+              <tr>
+                <td>Status</td>
+                <td>{{data_list.Status}}</td>
+              </tr>
+              <tr></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-responsive">
+          <h6 class="card-title">Body</h6>
+          <table class="table mb-1">
+            <tbody>
+              <tr>
+                <td>Dimensions</td>
+                <td>{{data_list.Dimensions}}</td>
+              </tr>
+              <tr>
+                <td>Weight</td>
+                <td>{{data_list.Weight}}</td>
+              </tr>
+              <tr>
+                <td>Build</td>
+                <td>{{data_list.Build}}</td>
+              </tr>
+              <tr>
+                <td>Sim</td>
+                <td>{{data_list.Sim}}</td>
+              </tr>
+              <tr></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-responsive">
+          <h6 class="card-title">Display</h6>
+          <table class="table mb-1">
+            <tbody>
+              <tr>
+                <td>Type</td>
+                <td>{{data_list.Type}}</td>
+              </tr>
+              <tr>
+                <td>Size</td>
+                <td>{{data_list.Size}}</td>
+              </tr>
+              <tr>
+                <td>Resolution</td>
+                <td>{{data_list.Resolution}}</td>
+              </tr>
+              <tr>
+                <td>Multitouch</td>
+                <td>{{data_list.Multitouch}}</td>
+              </tr>
+              <tr>
+                <td>Protection</td>
+                <td>{{data_list.Protection}}</td>
+              </tr>
+              <tr></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-responsive">
+          <h6 class="card-title">Platform</h6>
+          <table class="table mb-1">
+            <tbody>
+              <tr>
+                <td>OS</td>
+                <td>{{data_list.OS}}</td>
+              </tr>
+              <tr>
+                <td>Chipset</td>
+                <td>{{data_list.Chipset}}</td>
+              </tr>
+              <tr>
+                <td>CPU</td>
+                <td>{{data_list.CPU}}</td>
+              </tr>
+              <tr>
+                <td>GPU</td>
+                <td>{{data_list.GPU}}</td>
+              </tr>
+              <tr></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-responsive">
+          <h6 class="card-title">Memory</h6>
+          <table class="table mb-1">
+            <tbody>
+              <tr>
+                <td>Card Slot</td>
+                <td>{{data_list.Cardslot}}</td>
+              </tr>
+              <tr>
+                <td>Internal</td>
+                <td>{{data_list.Internal}}</td>
+              </tr>
+              <tr>
+                <td>Others</td>
+                <td>{{data_list.Others}}</td>
+              </tr>
+              <tr></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-responsive">
+          <h6 class="card-title">Camera</h6>
+          <table class="table mb-1">
+            <tbody>
+              <tr>
+                <td>Primary</td>
+                <td>{{data_list.Primary}}</td>
+              </tr>
+              <tr>
+                <td>Features</td>
+                <td>{{data_list.Features}}</td>
+              </tr>
+              <tr>
+                <td>Video</td>
+                <td>{{data_list.Video}}</td>
+              </tr>
+              <tr>
+                <td>Secondary</td>
+                <td>{{data_list.Secondary}}</td>
+              </tr>
+              <tr>
+                <td>Others</td>
+                <td>
+                  <ul class="list-unstyled">
+                    <li>{{data_list.Others}}</li>
+                  </ul>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-responsive">
+          <h6 class="card-title">Sound</h6>
+          <table class="table mb-1">
+            <tbody>
+              <tr>
+                <td>Alert Types</td>
+                <td>{{data_list.Alerttypes}}</td>
+              </tr>
+              <tr>
+                <td>Loudspeaker</td>
+                <td>{{data_list.Loudspeaker}}</td>
+              </tr>
+              <tr>
+                <td>3.5mm Jack</td>
+                <td>{{data_list.3.5mmjack}}</td>
+              </tr>
+              <tr></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-responsive">
+          <h6 class="card-title">COMMS</h6>
+          <table class="table mb-1">
+            <tbody>
+              <tr>
+                <td>WLAN</td>
+                <td>{{data_list.WLAN}}</td>
+              </tr>
+              <tr>
+                <td>Bluetooth</td>
+                <td>{{data_list.Bluetooth}}</td>
+              </tr>
+              <tr>
+                <td>GPS</td>
+                <td>{{data_list.GPS}}</td>
+              </tr>
+              <tr>
+                <td>NFC</td>
+                <td>{{data_list.NFC}}</td>
+              </tr>
+              <tr>
+                <td>Infrared port</td>
+                <td>{{data_list.Infraredport}}</td>
+              </tr>
+              <tr>
+                <td>Radio</td>
+                <td>{{data_list.Radio}}</td>
+              </tr>
+              <tr>
+                <td>USB</td>
+                <td>{{data_list.USB}}</td>
+              </tr>
+              <tr></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-responsive">
+          <h6 class="card-title">Features</h6>
+          <table class="table mb-1">
+            <tbody>
+              <tr>
+                <td>Sensors</td>
+                <td>{{data_list.Sensors}}</td>
+              </tr>
+              <tr></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-responsive">
+          <h6 class="card-title">Battery</h6>
+          <table class="table mb-1">
+            <tbody>
+              <tr>
+                <td>Type</td>
+                <td>{{data_list.Type}}</td>
+              </tr>
+              <tr></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-responsive">
+          <h6 class="card-title">Misc</h6>
+          <table class="table mb-1">
+            <tbody>
+              <tr>
+                <td>Colors</td>
+                <td>{{data_list.Colors}}</td>
+              </tr>
+              <tr></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-responsive">
+          <h6 class="card-title">Tests</h6>
+          <table class="table mb-1">
+            <tbody>
+              <tr></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
-{% endblock %}
+
+<hr />
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-8">
+      <h3 class="comment-title mb-2">Add a review</h3>
+      <form action="{% url 'comment' %}" method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <textarea class="form-control" rows="3" name="comment"> </textarea>
+        </div>
+        <input type="hidden" name="mobileid" value="{{mobile.id}}" />
+        <input type="hidden" name="parentSrno" value="" />
+        {% if request.user.is_authenticated %}
+        <button type="submit" value="submit" class="btn btn-primary">Post Review</button>
+        {% else %}
+        <a href="{% url 'signup' %}">
+          <button type="button" class="btn btn-primary mx-2">For Add Review SignUp/Login</button>
+        </a>
+        {% endif %}
+        <div class="row mb-3 justify-content-center">
+          <div class="col">
+            {% for message in messages %}
+            <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </form>
+      <h3 class="review-title">User Reviews</h3>
+      {% for comment in comments %}
+      <div class="row mb-3">
+        <div class="col-1 me-3">
+          <img width="40px" height="40px" style="border-radius: 50%" src="https://secure.gravatar.com/avatar/?s=40&d=mm&r=g" alt="Dummy PersonImage" />
+        </div>
+        <div class="col-10">
+          <div class="row">
+            <div class="col" style="font-size: 12px; font-weight: 100">
+              <span class="review-name">{{comment.user.username}}</span>
+              <span class="badge bg-secondary">{{comment.timestamp | naturaltime}}</span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col" style="font-size: 14px">{{comment.comment}}</div>
+          </div>
+          <div class="row">
+            <div class="col">
+              {% if user.is_authenticated %}
+              <p>
+                <a style="text-decoration: none" data-bs-toggle="collapse" href="#replyBox{{comment.srno}}" aria-expanded="false" aria-controls="replyBox{{comment.srno}}"> Reply </a>
+              </p>
+              <div class="collapse" id="replyBox{{comment.srno}}">
+                <div class="card card-body">
+                  <form action="{% url 'comment' %}" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                      <label for="comment">Reply to {{comment.user.username}}</label>
+                      <input type="text" class="form-control my-2" name="comment" placeholder="Enter comment here" />
+                      <input type="hidden" name="parentSrno" value="{{comment.srno}}" />
+                    </div>
+                    <input type="hidden" name="mobileid" value="{{mobile.id}}" />
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                  </form>
+                </div>
+              </div>
+              {% else %}
+              <a style="text-decoration: none" href="{% url 'login' %}"> Login to Reply</a>
+              {% endif %}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              {% for reply in replies %} {% if comment.srno == reply.parent.srno %}
+              <div class="row mb-2">
+                <div class="col-1 me-3">
+                  <img width="40px" height="40px" style="border-radius: 50%" src="https://secure.gravatar.com/avatar/?s=40&d=mm&r=g" alt="Dummy PersonImage" />
+                </div>
+                <div class="col-10">
+                  <div class="row">
+                    <div class="col" style="font-size: 12px; font-weight: 100">
+                      <span class="review-name">{{reply.user.username}}</span>
+                      <span class="badge bg-secondary">{{reply.timestamp | naturaltime}}</span>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col" style="font-size: 14px">{{reply.comment}}</div>
+                  </div>
+                </div>
+              </div>
+              {% endif %} {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% endblock %} {% block script %}
+<script>
+  function senddata(mobile) {
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          // Does this cookie string begin with the name we want?
+          if (cookie.substring(0, name.length + 1) === name + "=") {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+    const csrftoken = getCookie("csrftoken");
+
+    $.ajax({
+      url: "/wishlistdata",
+      type: "POST",
+      data: {
+        Mobile: mobile,
+      },
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+      },
+      success: function (data) {
+        console.log(data);
+      },
+      error: function (error) {
+        console.log(error);
+      },
+    });
+  }
+  function addWishlist(mobile) {
+    senddata(mobile);
+  }
+  function removeWishlist(mobile) {
+    senddata(mobile);
+  }
+  let wishlistButton = document.getElementById("Wishlist-btn");
+  wishlistButton.addEventListener("click", function () {
+    if (this.classList.contains("active")) {
+      let mobile = this.dataset.mobile;
+      removeWishlist(mobile);
+      this.classList.remove("active");
+      this.classList.remove("btn-success");
+      this.classList.add("btn-primary");
+    } else {
+      if (this.classList.contains("btn-primary")) {
+        let mobile = this.dataset.mobile;
+        addWishlist(mobile);
+        this.classList.add("active");
+        this.classList.remove("btn-primary");
+        this.classList.add("btn-success");
+      }
+    }
+  });
+</script>
+{% endblock script %}

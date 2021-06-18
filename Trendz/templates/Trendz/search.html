@@ -1,0 +1,94 @@
+{% extends "Trendz/main.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: "Open Sans", sans-serif;
+    color: #303f4a;
+  }
+  .title-more {
+    display: flex;
+  }
+  .product-item {
+    border: 1px solid rgba(80, 104, 122, 0.11);
+    border-radius: 6px;
+    display: flex;
+    width: 180px;
+    height: 300px;
+    list-style: none;
+    flex-direction: column;
+    text-decoration: none;
+    background-color: transparent;
+    margin-right: 25px;
+  }
+  .image {
+    display: flex;
+    justify-content: center;
+  }
+  .status {
+    font-size: 11px;
+    color: #a80500;
+    text-align: center;
+    margin-top: 0px;
+    font-weight: 600;
+  }
+  .brand-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: #303f4a;
+    text-align: center;
+    overflow: hidden;
+    line-height: 1.5em;
+    height: 3em;
+  }
+  .price{
+    text-align: center;
+    font-size: 16px;
+    color: #303f4a;
+  }
+  .price span{
+    color: #0984e3;
+    font-weight: 700;
+  }
+</style>
+{% endblock style %}
+    
+{% block title %}
+Trendzone
+{% endblock %}
+{% block body %}
+ 
+{% if mobiles or laptops %}
+<div class="container">
+    <div class="title-more">
+        <h3>Search Results</h3>
+    </div>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+        {% for mobile in mobiles %}
+        <a class="product-item" href="{% url 'phonedetail' mobile.tag %}">
+            <div class="image"><img height="199px" width="149px" src="{{mobile.image}}" alt="Nothing Show"></div>
+            {% if mobile.status == "None" %}
+            {%else%}
+            <div class="status">{{mobile.status}}</div>
+            {% endif %}    
+            <div class="brand-name">{{mobile.title}}</div>
+            <div class="price"><span>{{ mobile.price }}</span>RS</div>
+        </a>
+        {% endfor %}
+        {% for laptop in laptops %}
+        <a class="product-item" href="{% url 'laptopdetail' laptop.tag1 %}">
+            <div class="image"><img height="199px" width="149px" src="{{laptop.image}}" alt="Nothing Show"></div>  
+            <div class="price"><span>{{ laptop.price }}</span></div>  
+            <div class="brand-name">{{laptop.title}}</div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+<h3 class="nothing">Not Found</h3>
+{% endif %}
+{% endblock %}

@@ -1,36 +1,98 @@
-{% extends "Trendz/index.html" %}
-{% load static %}
-{% block style %}
-    <link rel="stylesheet" href="{% static '/css/devicelist.css' %}">
-{% endblock style %}
-    
-{% block title %}
-Trendzone
-{% endblock %}
-{% block body %}
-
-
-
-
+{% extends "Trendz/main.html" %} {% load static %} {% block style %}
+<link rel="stylesheet" href="{% static '/css/devicelist.css' %}" />
+{% endblock style %} {% block title %} Trendzone {% endblock %} {% block body %}
 
 <div class="container">
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
-        {% for image, title , price , tag in devices %}
-        <div>
-            <article class="u-shadow-v18 g-bg-white text-center rounded pt-2 pb-2">
-                <a href="{% url 'phonedetail' tag %}">
-                    <img src="{{image}}">
-                </a>
-                <a class ="title " href="{% url 'phonedetail' tag %}">
-                    <h4 class="h5 ">{{ title}}</h4>
-                </a>
-                <span class="d-block g-color-primary g-font-size-16">{{price}}Rs</span>
-            </article>
-        </div>
-        
-        {% endfor %}
-
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+    {% for obj in page_obj %}
+    <div>
+      <article class="u-shadow-v18 g-bg-white text-center rounded pt-2 pb-2">
+        <a href="{% url 'phonedetail' obj.tag %}">
+          <img src="{{obj.image}}" />
+        </a>
+        <a class="title" href="{% url 'phonedetail' obj.tag %}">
+          <h4 class="h5">{{obj.title}}</h4>
+        </a>
+        <span class="d-block g-color-primary g-font-size-16"
+          >{{obj.price}}Rs</span
+        >
+      </article>
     </div>
+
+    {% endfor %}
+  </div>
 </div>
 
-{% endblock %}
+<div class="container">
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+    {% for obj in page_obj1 %}
+    <div>
+      <article class="u-shadow-v18 g-bg-white text-center rounded pt-2 pb-2">
+        <a href="{% url 'laptopdetail' obj.tag1 %}">
+          <img src="{{obj.image}}" />
+        </a>
+        <a class="title" href="{% url 'laptopdetail' obj.tag1 %}">
+          <h4 class="h5">{{obj.title}}</h4>
+        </a>
+        <span class="d-block g-color-primary g-font-size-16"
+          >{{obj.price}}</span
+        >
+      </article>
+    </div>
+
+    {% endfor %}
+  </div>
+</div>
+
+{% if page_obj %}
+
+<nav style="margin-top: 25px;">
+  <ul class="pagination justify-content-center">
+    {% if page_obj.has_previous %}
+    <li class="page-item ">
+      <a class="page-link" href="?page=1">First</a>
+    </li>
+    <li class="page-item">
+      <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+    </li>
+    {% endif %}
+    <li class="page-item disabled">
+      <a class="page-link" href="#">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</a>
+    </li>
+    {% if page_obj.has_next %}
+    <li class="page-item">
+      <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+    </li>
+    <li class="page-item">
+      <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+    </li>
+    {% endif %}
+  </ul>
+</nav>
+
+{% else %}
+<nav>
+  <ul class="pagination justify-content-center">
+    {% if page_obj1.has_previous %}
+    <li class="page-item ">
+      <a class="page-link" href="?page=1">First</a>
+    </li>
+    <li class="page-item">
+      <a class="page-link" href="?page={{ page_obj1.previous_page_number }}">Previous</a>
+    </li>
+    {% endif %}
+    <li class="page-item disabled">
+      <a class="page-link" href="#">Page {{ page_obj1.number }} of {{ page_obj1.paginator.num_pages }}</a>
+    </li>
+    {% if page_obj1.has_next %}
+    <li class="page-item">
+      <a class="page-link" href="?page={{ page_obj1.next_page_number }}">Next</a>
+    </li>
+    <li class="page-item">
+      <a class="page-link" href="?page={{ page_obj1.paginator.num_pages }}">Last</a>
+    </li>
+    {% endif %}
+  </ul>
+</nav>
+
+{% endif %} {% endblock %}

@@ -1,0 +1,214 @@
+{% extends "Trendz/main.html" %} {% load static %} {% block style %}
+<link rel="stylesheet" href="{% static '/css/phonedetail.css' %}" />
+{% endblock style %} {% block title %} Trendzone {% endblock %} {% block body %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 text-center">
+      <div class="row justify-content-end">
+        <div class="col-3">
+          {% if wishlist %}
+          <button id="Wishlist-btn" data-laptop="{{laptop.id}}" type="sumbit" class="btn btn-success btn-sm active">Wishlist</button>
+          {% else %}
+          <button id="Wishlist-btn" data-laptop="{{laptop.id}}" type="sumbit" class="btn btn-primary btn-sm">Wishlist</button>
+          {% endif %}
+        </div>
+      </div>
+      <img src="{{image_mega}}" />
+    </div>
+    <div class="col-md-6">
+      <div class="row">
+        <div class="col">
+          <!--<div class="like liked" data-id="10620" title="Remove this from wishlist.">
+                        <i class="fa fa-star"></i>
+                    </div>-->
+          <h3 class="title"><strong>{{title_mega}}</strong></h3>
+          <div><span class="price">{{price_mega}}</span> <small>RS</small></div>
+          <div class="rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <ul class="list-unstyled row mx-0" style="width: fit-content">
+            <li class="col-6 p-0">
+              <div class="row spec-wr mx-0">
+                <div class="col-2 spec-ic p-0">
+                  <img width="50" height="50" src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/camera-grp.png" class="lazyloaded" data-ll-status="loaded" /><noscript
+                    ><img width="50" height="50" src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/camera-grp.png"
+                  /></noscript>
+                </div>
+                <div class="col spec-dt"><span style="color: #303f4a; font-size: 16px"></span> Camera</div>
+              </div>
+            </li>
+            <li class="col-6 p-0">
+              <div class="row spec-wr mx-0">
+                <div class="col-2 spec-ic p-0">
+                  <img width="50" height="50" src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/processor-grp.png" class="lazyloaded" data-ll-status="loaded" /><noscript
+                    ><img width="50" height="50" src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/processor-grp.png"
+                  /></noscript>
+                </div>
+                <div class="col spec-dt">
+                  <span style="color: #303f4a; font-size: 16px">{{data_listmega.0}}</span>
+                  Processor
+                </div>
+              </div>
+            </li>
+            <li class="col-6 p-0">
+              <div class="row spec-wr mx-0">
+                <div class="col-2 spec-ic p-0">
+                  <img width="50" height="50" src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/storage-grp.png" class="lazyloaded" data-ll-status="loaded" /><noscript
+                    ><img width="50" height="50" src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/storage-grp.png"
+                  /></noscript>
+                </div>
+                <div class="col spec-dt">
+                  <span style="color: #303f4a; font-size: 16px">{{data_listmega.2}}</span>
+                  Internal Storage
+                </div>
+              </div>
+            </li>
+            <li class="col-6 p-0">
+              <div class="row spec-wr mx-0">
+                <div class="col-2 spec-ic p-0">
+                  <img width="50" height="50" src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/battery-grp.png" class="lazyloaded" data-ll-status="loaded" /><noscript
+                    ><img width="50" height="50" src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/battery-grp.png"
+                  /></noscript>
+                </div>
+                <div class="col spec-dt"><span style="color: #303f4a; font-size: 16px"></span> Battery</div>
+              </div>
+            </li>
+            <li class="col-6 p-0">
+              <div class="row spec-wr mx-0">
+                <div class="col-2 spec-ic p-0">
+                  <img width="50" height="50" src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/ram-grp.png" class="lazyloaded" data-ll-status="loaded" /><noscript
+                    ><img width="50" height="50" src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/ram-grp.png"
+                  /></noscript>
+                </div>
+                <div class="col spec-dt">
+                  <span style="color: #303f4a; font-size: 16px">{{data_listmega.3}}</span>
+                  Memory (RAM)
+                </div>
+              </div>
+            </li>
+            <li class="col-6 p-0">
+              <div class="row spec-wr mx-0">
+                <div class="col-2 spec-ic p-0">
+                  <img width="50" height="50" src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/display-grp.png" class="lazyloaded" data-ll-status="loaded" /><noscript
+                    ><img width="50" height="50" src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/display-grp.png"
+                  /></noscript>
+                </div>
+                <div class="col spec-dt">
+                  <span style="color: #303f4a; font-size: 16px">{{data_listmega.4}}</span>
+                  Dispaly
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-8">
+      <div class="specifications-details-inner border">
+        <div class="py-2">
+          <h2 class="phone-title">{{title_mega}}</h2>
+          <h3 class="phone-title-spec">Specifications</h3>
+        </div>
+        <div class="table-responsive">
+          <table class="table mb-2">
+            <tbody>
+              <tr>
+                <td>Price in Pakistan</td>
+                <td>Rs. {{price_mega}}/-</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-responsive">
+          <table class="table mb-1 table-striped">
+            <tbody>
+              {% for head,data in datadictmega %}
+              <tr>
+                <td>{{head}}</td>
+                {% if 'NULL' in data %}
+                <td>-</td>
+                {% else %}
+                <td>{{data}}</td>
+                {% endif %}
+              </tr>
+              {% endfor %}
+              <tr></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %} {% block script %}
+<script>
+  function senddata(laptop) {
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          // Does this cookie string begin with the name we want?
+          if (cookie.substring(0, name.length + 1) === name + "=") {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+    const csrftoken = getCookie("csrftoken");
+
+    $.ajax({
+      url: "/wishlistdata",
+      type: "POST",
+      data: {
+        Laptop: laptop,
+      },
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+      },
+      success: function (data) {
+        console.log(data);
+      },
+      error: function (error) {
+        console.log(error);
+      },
+    });
+  }
+  function addWishlist(laptop) {
+    senddata(laptop);
+  }
+  function removeWishlist(laptop) {
+    senddata(laptop);
+  }
+  let wishlistButton = document.getElementById("Wishlist-btn");
+  wishlistButton.addEventListener("click", function () {
+    if (this.classList.contains("active")) {
+      let laptop = this.dataset.laptop;
+      removeWishlist(laptop);
+      this.classList.remove("active");
+      this.classList.remove("btn-success");
+      this.classList.add("btn-primary");
+    } else {
+      if (this.classList.contains("btn-primary")) {
+        let laptop = this.dataset.laptop;
+        addWishlist(laptop);
+        this.classList.add("active");
+        this.classList.remove("btn-primary");
+        this.classList.add("btn-success");
+      }
+    }
+  });
+</script>
+{% endblock script %}

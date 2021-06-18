@@ -1,0 +1,574 @@
+{% extends "Trendz/main.html" %} {%load static%} {% block style %}
+<style>
+  *,
+  ::after,
+  ::before {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: "Open Sans", sans-serif;
+    color: #303f4a;
+  }
+
+  .responsive {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+  }
+
+  .table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .card-title {
+    height: 33px;
+    background-color: #f1f2f6;
+    color: #303f4a;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 19px;
+    padding: 7px 22px;
+    text-transform: uppercase;
+    margin: 20px 0 25px;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+  }
+
+  .mb-1,
+  .my-1 {
+    margin-bottom: 0.25rem !important;
+  }
+
+  table {
+    border-collapse: collapse;
+  }
+
+  .table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #212529;
+  }
+
+  .heading-table {
+    text-align: center;
+    color: rgba(48, 63, 74, 0.5);
+    font-weight: 600;
+  }
+
+  .datacell {
+    text-align: center;
+    color: #303f4a;
+  }
+
+  .table td,
+  .table th {
+    width: 50%;
+    font-size: 14px;
+    line-height: 19px;
+    border: none;
+    padding: 5px 22px;
+  }
+
+  .image {
+    display: flex;
+    justify-content: center;
+  }
+
+  .brand-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: #303f4a;
+    text-align: center;
+  }
+  .Mobile {
+    text-align: center;
+    height: 70px;
+    text-decoration: none;
+  }
+  .Laptop {
+    text-align: center;
+    height: 70px;
+    text-decoration: none;
+  }
+  .Mobile p {
+    padding: 20px 0px;
+    color: #303f4a;
+    font-size: 20px;
+  }
+  .Mobile p:hover {
+    color: blue;
+    background-color: rgba(111, 109, 250, 0.5);
+  }
+  .Laptop p:hover {
+    color: blue;
+    background-color: rgba(111, 109, 250, 0.5);
+  }
+  .Laptop p {
+    padding: 20px 0px;
+    color: #303f4a;
+    font-size: 20px;
+  }
+  .compareTabs {
+    margin: 20px 0px;
+  }
+</style>
+{% endblock style %} {% block title %} Trendzone {% endblock %} {% block body %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-9">
+      <div class="compareTabs row">
+        <a class="col" href="{% url 'compareMobile' %}">
+          <div class="Mobile"><p>Mobile</p></div>
+        </a>
+        <a class="col" href="{% url 'compareLaptop' %}">
+          <div class="Laptop"><p>Laptop</p></div>
+        </a>
+      </div>
+      <div class="compare-search container">
+        <h3>Compare Mobile</h3>
+        <form class="mb-2 mb-lg-0" action="{% url 'compareMobile' %}">
+          <div class="row mb-4">
+            <div class="col-6">
+              <input class="form-control" type="search" placeholder="Phone 1" aria-label="Search" name="phone1" />
+            </div>
+            <div class="col-6">
+              <input class="form-control" type="search" placeholder="Phone 2" aria-label="Search" name="phone2" />
+            </div>
+          </div>
+          <div class="row justify-content-center">
+            <div class="d-grid col-2">
+              <button class="btn btn-outline-primary" type="submit">Compare</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      {% if phone1 or phone2 %}
+      <div class="row">
+        <div class="col-6">
+          <div class="image">
+            <img height="199px" width="149px" src="{{phone1.image}}" alt="" />
+          </div>
+          <h3 class="brand-name">{{phone1.title}}</h3>
+        </div>
+        <div class="col-6">
+          <div class="image">
+            <img height="199px" width="149px" src="{{phone2.image}}" alt="" />
+          </div>
+          <h3 class="brand-name">{{phone2.title}}</h3>
+        </div>
+      </div>
+      <table class="table mb-1 table-borderless">
+        <tbody>
+          <tr>
+            <td colspan="2" class="heading-table">Price</td>
+          </tr>
+          <tr>
+            <td class="datacell">{{phone1.price}}</td>
+            <td class="datacell">{{phone2.price}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="row">
+        <div class="table-responsive">
+          <h6 class="card-title">Network</h6>
+          <table class="table mb-1 table-borderless">
+            <tbody>
+              <tr>
+                <td colspan="2" class="heading-table">Technology</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.Technology}}</td>
+                <td class="datacell">{{phone2.data_list.Technology}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">2G Bands</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.2GBands}}</td>
+                <td class="datacell">{{phone2.data_list.2GBands}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">3G Bands</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.3GBands}}</td>
+                <td class="datacell">{{phone2.data_list.3GBands}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">4G Bands</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.4GBands}}</td>
+                <td class="datacell">{{phone2.data_list.4GBands}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">5G Bands</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.5GBands}}</td>
+                <td class="datacell">{{phone2.data_list.5GBands}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Speed</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.Speed}}</td>
+                <td class="datacell">{{phone2.data_list.Speed}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">GPRS</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.GPRS}}</td>
+                <td class="datacell">{{phone2.data_list.GPRS}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Edge</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.EDGE}}</td>
+                <td class="datacell">{{phone2.data_list.EDGE}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-responsive">
+          <h6 class="card-title">Launch</h6>
+          <table class="table mb-1 table-borderless">
+            <tbody>
+              <tr>
+                <td colspan="2" class="heading-table">Announced</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.Announced}}</td>
+                <td class="datacell">{{phone2.data_list.Announced}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Status</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.Status}}</td>
+                <td class="datacell">{{phone2.data_list.Status}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-responsive">
+          <h6 class="card-title">Body</h6>
+          <table class="table mb-1 table-borderless">
+            <tbody>
+              <tr>
+                <td colspan="2" class="heading-table">Dimmensions</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.Dimensions}}</td>
+                <td class="datacell">{{phone2.data_list.Dimensions}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Weight</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.Weight}}</td>
+                <td class="datacell">{{phone2.data_list.Weight}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Build</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.Build}}</td>
+                <td class="datacell">{{phone2.data_list.Build}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Sim</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.Sim}}</td>
+                <td class="datacell">{{phone2.data_list.Sim}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-responsive">
+          <h6 class="card-title">Display</h6>
+          <table class="table mb-1 table-borderless">
+            <tbody>
+              <tr>
+                <td colspan="2" class="heading-table">Type</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.Type}}</td>
+                <td class="datacell">{{phone2.data_list.Type}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Size</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.Size}}</td>
+                <td class="datacell">{{phone2.data_list.Size}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Resoloution</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.Resolution}}</td>
+                <td class="datacell">{{phone2.data_list.Resolution}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Multitouch</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.Multitouch}}</td>
+                <td class="datacell">{{phone2.data_list.Multitouch}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Protection</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.Protection}}</td>
+                <td class="datacell">{{phone2.data_list.Protection}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-responsive">
+          <h6 class="card-title">Platform</h6>
+          <table class="table mb-1 table-borderless">
+            <tbody>
+              <tr>
+                <td colspan="2" class="heading-table">OS</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.OS}}</td>
+                <td class="datacell">{{phone2.data_list.OS}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Chipst</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.Chipset}}</td>
+                <td class="datacell">{{phone2.data_list.Chipset}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">CPU</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.CPU}}</td>
+                <td class="datacell">{{phone2.data_list.CPU}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">GPU</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.GPU}}</td>
+                <td class="datacell">{{phone2.data_list.GPU}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-responsive">
+          <h6 class="card-title">Memory</h6>
+          <table class="table mb-1 table-borderless">
+            <tbody>
+              <tr>
+                <td colspan="2" class="heading-table">Card Slot</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.Cardslot}}</td>
+                <td class="datacell">{{phone2.data_list.Cardslot}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Internal</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.Internal}}</td>
+                <td class="datacell">{{phone2.data_list.Internal}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Others</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.Others}}</td>
+                <td class="datacell">{{phone2.data_list.Others}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-responsive">
+          <h6 class="card-title">Camera</h6>
+          <table class="table mb-1 table-borderless">
+            <tbody>
+              <tr>
+                <td colspan="2" class="heading-table">Primary</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.Primary}}</td>
+                <td class="datacell">{{phone2.data_list.Primary}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Features</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.Features}}</td>
+                <td class="datacell">{{phone2.data_list.Features}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Video</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.Video}}</td>
+                <td class="datacell">{{phone2.data_list.Video}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Secondary</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.Secondary}}</td>
+                <td class="datacell">{{phone2.data_list.Secondary}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Others</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.Others}}</td>
+                <td class="datacell">{{phone2.data_list.Others}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-responsive">
+          <h6 class="card-title">Sound</h6>
+          <table class="table mb-1 table-borderless">
+            <tbody>
+              <tr>
+                <td colspan="2" class="heading-table">Alert types</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.Alerttypes}}</td>
+                <td class="datacell">{{phone2.data_list.Alerttypes}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Loudspeaker</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.Loudspeaker}}</td>
+                <td class="datacell">{{phone2.data_list.Loudspeaker}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">3.5mm jack/td></td>
+              </tr>
+
+              <tr>
+                <td class="datacell">{{phone1.data_list.3.5mmjack}}</td>
+                <td class="datacell">{{phone2.data_list.3.5mmjack}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-responsive">
+          <h6 class="card-title">Comms</h6>
+          <table class="table mb-1 table-borderless">
+            <tbody>
+              <tr>
+                <td colspan="2" class="heading-table">WLAN</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.WLAN}}</td>
+                <td class="datacell">{{phone2.data_list.WLAN}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Bluetooth</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.Bluetooth}}</td>
+                <td class="datacell">{{phone2.data_list.Bluetooth}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">GPS</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.GPS}}</td>
+                <td class="datacell">{{phone2.data_list.GPS}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">NFC</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.NFC}}</td>
+                <td class="datacell">{{phone2.data_list.NFC}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Infrared Port</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.Infraredport}}</td>
+                <td class="datacell">{{phone2.data_list.Infraredport}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Radio</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.Radio}}</td>
+                <td class="datacell">{{phone2.data_list.Radio}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">USB</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.USB}}</td>
+                <td class="datacell">{{phone2.data_list.USB}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-responsive">
+          <h6 class="card-title">Battery</h6>
+          <table class="table mb-1 table-borderless">
+            <tbody>
+              <tr>
+                <td colspan="2" class="heading-table">Type</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.Type}}</td>
+                <td class="datacell">{{phone2.data_list.Type}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Charging 10W</td>
+              </tr>
+              <tr>
+                <td class="datacell">GSM / HSPA / LTE</td>
+                <td class="datacell">GSM / HSPA / LTE</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-responsive">
+          <h6 class="card-title">Misc</h6>
+          <table class="table mb-1 table-borderless">
+            <tbody>
+              <tr>
+                <td colspan="2" class="heading-table">Colors</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{phone1.data_list.Colors}}</td>
+                <td class="datacell">{{phone2.data_list.Colors}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">SAR US</td>
+              </tr>
+              <tr>
+                <td class="datacell">GSM / HSPA / LTE</td>
+                <td class="datacell">GSM / HSPA / LTE</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

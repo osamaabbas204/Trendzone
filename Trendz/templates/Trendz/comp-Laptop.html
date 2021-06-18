@@ -1,0 +1,439 @@
+{% extends "Trendz/main.html" %} {%load static%} {% block style %}
+<style>
+  *,
+  ::after,
+  ::before {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: "Open Sans", sans-serif;
+    color: #303f4a;
+  }
+
+  .responsive {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+  }
+
+  .table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .card-title {
+    height: 33px;
+    background-color: #f1f2f6;
+    color: #303f4a;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 19px;
+    padding: 7px 22px;
+    text-transform: uppercase;
+    margin: 20px 0 25px;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+  }
+
+  .mb-1,
+  .my-1 {
+    margin-bottom: 0.25rem !important;
+  }
+
+  table {
+    border-collapse: collapse;
+  }
+
+  .table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #212529;
+  }
+
+  .heading-table {
+    text-align: center;
+    color: rgba(48, 63, 74, 0.5);
+    font-weight: 600;
+  }
+
+  .datacell {
+    text-align: center;
+    color: #303f4a;
+  }
+
+  .table td,
+  .table th {
+    width: 50%;
+    font-size: 14px;
+    line-height: 19px;
+    border: none;
+    padding: 5px 22px;
+  }
+
+  .image {
+    display: flex;
+    justify-content: center;
+  }
+
+  .brand-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: #303f4a;
+    text-align: center;
+  }
+  .Mobile {
+    text-align: center;
+    height: 70px;
+    text-decoration: none;
+  }
+  .Laptop {
+    text-align: center;
+    height: 70px;
+    text-decoration: none;
+  }
+  .Mobile p {
+    padding: 20px 0px;
+    color: #303f4a;
+    font-size: 20px;
+  }
+  .Mobile p:hover {
+    color: blue;
+    background-color: rgba(111, 109, 250, 0.5);
+  }
+  .Laptop p:hover {
+    color: blue;
+    background-color: rgba(111, 109, 250, 0.5);
+  }
+  .Laptop p {
+    padding: 20px 0px;
+    color: #303f4a;
+    font-size: 20px;
+  }
+  .compareTabs {
+    margin: 20px 0px;
+  }
+</style>
+{% endblock style %} {% block title %} Trendzone {% endblock %} {% block body %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-9">
+      <div class="compareTabs row">
+        <a class="col" href="{% url 'compareMobile' %}">
+          <div class="Mobile"><p>Mobile</p></div>
+        </a>
+        <a class="col" href="{% url 'compareLaptop' %}">
+          <div class="Laptop"><p>Laptop</p></div>
+        </a>
+      </div>
+      <div class="compare-search container">
+        <h3>Compare Laptop</h3>
+        <form class="mb-2 mb-lg-0" action="{% url 'compareLaptop' %}">
+          <div class="row mb-4">
+            <div class="col-6">
+              <input class="form-control" type="search" placeholder="Laptop 1" aria-label="Search" name="laptop1" />
+            </div>
+            <div class="col-6">
+              <input class="form-control" type="search" placeholder="Laptop 2" aria-label="Search" name="laptop2" />
+            </div>
+          </div>
+          <div class="row justify-content-center">
+            <div class="d-grid col-2">
+              <button class="btn btn-outline-primary" type="submit">Compare</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      {% if laptop1 or laptop2 %}
+      <div class="row">
+        <div class="col-6">
+          <div class="image">
+            <img height="199px" width="149px" src="{{laptop1.laptop.image}}" alt="" />
+          </div>
+          <h3 class="brand-name">{{laptop1.title}}</h3>
+        </div>
+        <div class="col-6">
+          <div class="image">
+            <img height="199px" width="149px" src="{{laptop2.laptop.image}}" alt="" />
+          </div>
+          <h3 class="brand-name">{{laptop2.title}}</h3>
+        </div>
+      </div>
+      <table class="table mb-1 table-borderless">
+        <tbody>
+          <tr>
+            <td colspan="2" class="heading-table">Price</td>
+          </tr>
+          <tr>
+            <td class="datacell">{{laptop1.laptop.price}}</td>
+            <td class="datacell">{{laptop2.laptop.price}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="row">
+        <div class="table-responsive">
+          <table class="table mb-1 table-borderless">
+            <tbody>
+              <tr>
+                <td colspan="2" class="heading-table">Generation</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.generation}}</td>
+                <td class="datacell">{{laptop2.generation}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Processor Type</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.processor}}</td>
+                <td class="datacell">{{laptop2.processor}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Processor Speed</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.processor_speed}}</td>
+                <td class="datacell">{{laptop2.processor_speed}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Installed Ram</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.installed_ram}}</td>
+                <td class="datacell">{{laptop2.installed_ram}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Type of Memory</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.type_ofmemory}}</td>
+                <td class="datacell">{{laptop2.type_ofmemory}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">HardDrive Size</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.hard_drivesize}}</td>
+                <td class="datacell">{{laptop2.hard_drivesize}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">HardDrive Speed</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.hard_drivespeed}}</td>
+                <td class="datacell">{{laptop2.hard_drivespeed}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Optical Drive</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.optical_drive}}</td>
+                <td class="datacell">{{laptop2.optical_drive}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Type of Optical Drive</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.type_ofopticaldrive}}</td>
+                <td class="datacell">{{laptop2.type_ofopticaldrive}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">SSD</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.ssd}}</td>
+                <td class="datacell">{{laptop2.ssd}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Type of HardDrive</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.type_ofharddrive}}</td>
+                <td class="datacell">{{laptop2.type_ofharddrive}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Dedicated Graphics</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.dedicated_graphics}}</td>
+                <td class="datacell">{{laptop2.dedicated_graphics}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Graphics Memory</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.graphics_memory}}</td>
+                <td class="datacell">{{laptop2.graphics_memory}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Type of GraphicsMemory Shared</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.type_ofgraphics_memory_shared}}</td>
+                <td class="datacell">{{laptop2.type_ofgraphics_memory_shared}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Switchable Graphics</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.switchable_graphics}}</td>
+                <td class="datacell">{{laptop2.switchable_graphics}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Graphics Processor</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.graphics_processor}}</td>
+                <td class="datacell">{{laptop2.graphics_processor}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Backlight</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.backlight}}</td>
+                <td class="datacell">{{laptop2.backlight}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Screen Size</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.screen_size}}</td>
+                <td class="datacell">{{laptop2.screen_size}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Screen Surface</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.screen_surface}}</td>
+                <td class="datacell">{{laptop2.screen_surface}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Screen Resoloution</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.screen_resoloution}}</td>
+                <td class="datacell">{{laptop2.screen_resoloution}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Touchscreen</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.touchscreen}}</td>
+                <td class="datacell">{{laptop2.touchscreen}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Color</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.color}}</td>
+                <td class="datacell">{{laptop2.color}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Fingerprint Reader</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.fingerprint_reader}}</td>
+                <td class="datacell">{{laptop2.fingerprint_reader}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Numeric Keyboard</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.numeric_keyboard}}</td>
+                <td class="datacell">{{laptop2.numeric_keyboard}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Backlit Keyboard</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.backlit_keyboard}}</td>
+                <td class="datacell">{{laptop2.backlit_keyboard}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Bluetooth</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.bluetooth}}</td>
+                <td class="datacell">{{laptop2.bluetooth}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">LAN</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.lan}}</td>
+                <td class="datacell">{{laptop2.lan}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Speed</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.speed}}</td>
+                <td class="datacell">{{laptop2.speed}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Wireless WIFI</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.wireless_wifi}}</td>
+                <td class="datacell">{{laptop2.wireless_wifi}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">WIFI Type</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.wifi_type}}</td>
+                <td class="datacell">{{laptop2.wifi_type}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Condition</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.condition}}</td>
+                <td class="datacell">{{laptop2.condition}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">USB</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.usb}}</td>
+                <td class="datacell">{{laptop2.usb}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">HDMI</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.hdmi}}</td>
+                <td class="datacell">{{laptop2.hdmi}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Camera</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.camera}}</td>
+                <td class="datacell">{{laptop2.camera}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Operating System</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.operating_system}}</td>
+                <td class="datacell">{{laptop2.operating_system}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="heading-table">Warranty</td>
+              </tr>
+              <tr>
+                <td class="datacell">{{laptop1.warranty}}</td>
+                <td class="datacell">{{laptop2.warranty}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

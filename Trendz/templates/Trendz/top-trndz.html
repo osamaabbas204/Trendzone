@@ -1,7 +1,15 @@
-{% extends "Trendz/index.html" %}
+{% extends "Trendz/main.html" %}
 {% block title %}
 Trendzone
 {% endblock %}
+{% block style %}
+<style>
+    .block{
+        height: 800px;
+    }
+</style>
+{% endblock style %}
 {% block body %}
 This is my Top Trendz Page
+<div class="block"></div>
 {% endblock %}
