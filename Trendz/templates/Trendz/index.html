@@ -9,15 +9,11 @@
   }
   .title-more {
     display: flex;
-    justify-content: space-between;
   }
   .product-item {
-    border: 1px solid rgba(80, 104, 122, 0.11);
-    border-radius: 6px;
     display: flex;
     width: 180px;
     height: 300px;
-    justify-content: center;
     list-style: none;
     flex-direction: column;
     text-decoration: none;
@@ -35,214 +31,218 @@
     margin-top: 0px;
     font-weight: 600;
   }
-  .rating {
-    font-size: 17px;
-    color: #ffdc64;
-    text-align: center;
-    margin-bottom: 2px;
-  }
   .brand-name {
     font-weight: 600;
     font-size: 14px;
     color: #303f4a;
     text-align: center;
+    overflow: hidden;
+    line-height: 1.5em;
+    height: 3em;
+  }
+  .price {
+    text-align: center;
+    font-size: 16px;
+    color: #303f4a;
+  }
+  .price span {
+    color: #0984e3;
+    font-weight: 700;
   }
 </style>
 {% endblock style %} {% block title %} Trendzone {% endblock %} {% block body %}
-<div class="container">
-  <div class="title-more">
-    <h3>Latest Phones</h3>
-    <a href="{% url 'devicelist' 'latest-phone' %}"
-      >More<i class="fa fa-chevron-right"></i
-    ></a>
-  </div>
-  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
-    {% for mobile in latest_mobile %}
-    <a class="product-item" href="{% url 'phonedetail' mobile.tag %}">
-      <div class="image">
-        <img
-          height="199px"
-          width="149px"
-          src="{{mobile.image}}"
-          alt="Nothing Show"
-        />
+
+<div class="container my-5">
+  <a style="text-decoration: none" href="{% url 'devicelist' 'latest-phone' %}"><h3>Latest Mobile</h3></a>
+  <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <div class="row">
+          {% for mobile in latestMobile1 %}
+          <div class="col-2">
+            <a class="product-item" href="{% url 'phonedetail' mobile.tag %}">
+              <div class="image"><img height="199px" width="149px" src="{{mobile.image}}" alt="Nothing Show" /></div>
+              {% if mobile.status == "None" %} {%else%}
+              <div class="status">{{mobile.status}}</div>
+              {% endif %}
+              <div class="brand-name">{{mobile.title}}</div>
+              <div class="price"><span>{{ mobile.price }}</span>RS</div>
+            </a>
+          </div>
+          {% endfor %}
+        </div>
       </div>
-      <div class="status">{{mobile.status}}</div>
-      <div class="rating">
-        <i class="fa fa-star"></i><i class="fa fa-star"></i
-        ><i class="fa fa-star"></i><i class="fa fa-star"></i
-        ><i class="fa fa-star-o"></i>
+      <div class="carousel-item">
+        <div class="row">
+          {% for mobile in latestMobile2 %}
+          <div class="col-2">
+            <a class="product-item" href="{% url 'phonedetail' mobile.tag %}">
+              <div class="image"><img height="199px" width="149px" src="{{mobile.image}}" alt="Nothing Show" /></div>
+              {% if mobile.status == "None" %} {%else%}
+              <div class="status">{{mobile.status}}</div>
+              {% endif %}
+              <div class="brand-name">{{mobile.title}}</div>
+              <div class="price"><span>{{ mobile.price }}</span>RS</div>
+            </a>
+          </div>
+          {% endfor %}
+        </div>
       </div>
-      <div class="brand-name">{{mobile.title}}</div>
-    </a>
-    {% endfor %}
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
   </div>
 </div>
+
 <div class="container">
-  <div class="row" style="background-color: #dbe9ff">
-    <div class="col-12">
-      <h3 class="h1-responsive font-weight-bold text-center my-4">Mobile</h3>
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <canvas id="pie-chart"></canvas>
     </div>
-    <div class="col-md-6">
-      <h3 class="h1-responsive font-weight-bold text-center my-4">
-        Top 10 by Daily Interest
-      </h3>
-      <table class="table table-success table-striped table-hover">
-        <thead>
-          <tr>
-            <th scope="col"></th>
-            <th scope="col">Mobile</th>
-            <th scope="col">Daily hits</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td>Xiaomi Mi 11 ultra</td>
-            <td>41024</td>
-          </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Xiaomi Redmi Note 10 Pro</td>
-            <td>35947</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td>Samsung Galaxy Quantum 2</td>
-            <td>28930</td>
-          </tr>
-          <tr>
-            <th scope="row">4</th>
-            <td>Samsung Galaxy Quantum 2</td>
-            <td>28930</td>
-          </tr>
-          <tr>
-            <th scope="row">5</th>
-            <td>Samsung Galaxy Quantum 2</td>
-            <td>28930</td>
-          </tr>
-          <tr>
-            <th scope="row">6</th>
-            <td>Samsung Galaxy Quantum 2</td>
-            <td>28930</td>
-          </tr>
-          <tr>
-            <th scope="row">7</th>
-            <td>Samsung Galaxy Quantum 2</td>
-            <td>28930</td>
-          </tr>
-          <tr>
-            <th scope="row">8</th>
-            <td>Samsung Galaxy Quantum 2</td>
-            <td>28930</td>
-          </tr>
-          <tr>
-            <th scope="row">9</th>
-            <td>Samsung Galaxy Quantum 2</td>
-            <td>28930</td>
-          </tr>
-          <tr>
-            <th scope="row">10</th>
-            <td>Samsung Galaxy Quantum 2</td>
-            <td>28930</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="col-md-6">
-      <h3 class="h1-responsive font-weight-bold text-center my-4">
-        Top 10 by Daily Interest
-      </h3>
-      <img
-        src="{% static '/images/Mobile-Trend.png' %}"
-        class="img-fluid"
-        alt="..."
-        style="height: 450px"
-      />
+    <div class="col-md-8">
+      <a style="text-decoration: none" href="{% url 'devicelist' 'popular-phone' %}"><h3>Popular Mobile</h3></a>
+      <div class="row justify-content-between">
+        {% for mobile in popularMobile %}
+        <div class="col-2">
+          <a class="product-item" href="{% url 'phonedetail' mobile.tag %}">
+            <div class="image"><img height="199px" width="149px" src="{{mobile.image}}" alt="Nothing Show" /></div>
+            {% if mobile.status == "None" %} {%else%}
+            <div class="status">{{mobile.status}}</div>
+            {% endif %}
+            <div class="brand-name">{{mobile.title}}</div>
+            <div class="price"><span>{{ mobile.price }}</span>RS</div>
+          </a>
+        </div>
+        {% endfor %}
+      </div>
     </div>
   </div>
-</div>
-<div class="container">
+  <div class="row my-4">
+    <div class="col-md-4">
+      <canvas id="dailyGraph"></canvas>
+    </div>
+    <div class="col-md-8">
+      <h3>Popular Macbook</h3>
+      <div class="row justify-content-between">
+        {% for Mac in popularMac %}
+        <div class="col-2">
+          <a class="product-item" href="{% url 'laptopdetail' Mac.tag1 %}">
+            <div class="image"><img height="199px" width="149px" src="{{Mac.image}}" alt="Nothing Show" /></div>
+            <div class="price"><span>{{ Mac.price }}</span></div>
+            <div class="brand-name">{{Mac.title}}</div>
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
   <div class="row">
-    <h3 class="h1-responsive font-weight-bold text-center my-4">Mobile</h3>
-    <div class="col-md-6">
-      <h3 class="h1-responsive font-weight-bold text-center my-4">
-        Top 10 by Daily Interest
-      </h3>
-      <table class="table table-success table-striped table-hover">
-        <thead>
-          <tr>
-            <th scope="col"></th>
-            <th scope="col">Mobile</th>
-            <th scope="col">Daily hits</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td>Xiaomi Mi 11 ultra</td>
-            <td>41024</td>
-          </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Xiaomi Redmi Note 10 Pro</td>
-            <td>35947</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td>Samsung Galaxy Quantum 2</td>
-            <td>28930</td>
-          </tr>
-          <tr>
-            <th scope="row">4</th>
-            <td>Samsung Galaxy Quantum 2</td>
-            <td>28930</td>
-          </tr>
-          <tr>
-            <th scope="row">5</th>
-            <td>Samsung Galaxy Quantum 2</td>
-            <td>28930</td>
-          </tr>
-          <tr>
-            <th scope="row">6</th>
-            <td>Samsung Galaxy Quantum 2</td>
-            <td>28930</td>
-          </tr>
-          <tr>
-            <th scope="row">7</th>
-            <td>Samsung Galaxy Quantum 2</td>
-            <td>28930</td>
-          </tr>
-          <tr>
-            <th scope="row">8</th>
-            <td>Samsung Galaxy Quantum 2</td>
-            <td>28930</td>
-          </tr>
-          <tr>
-            <th scope="row">9</th>
-            <td>Samsung Galaxy Quantum 2</td>
-            <td>28930</td>
-          </tr>
-          <tr>
-            <th scope="row">10</th>
-            <td>Samsung Galaxy Quantum 2</td>
-            <td>28930</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="col-md-6">
-      <h3 class="h1-responsive font-weight-bold text-center my-4">
-        Top 10 by Daily Interest
-      </h3>
-      <img
-        src="{% static '/images/Mobile-Trend.png' %}"
-        class="img-fluid"
-        alt="..."
-        style="height: 450px"
-      />
+    <h3>Popular Laptop</h3>
+    <div class="row justify-content-between">
+      {% for Laptop in popularLaptop %}
+      <div class="col-2">
+        <a class="product-item" href="{% url 'laptopdetail' Laptop.tag1 %}">
+          <div class="image"><img height="199px" width="149px" src="{{Laptop.image}}" alt="Nothing Show" /></div>
+          <div class="price"><span>{{ Laptop.price }}</span></div>
+          <div class="brand-name">{{Laptop.title}}</div>
+        </a>
+      </div>
+      {% endfor %}
     </div>
   </div>
 </div>
 
-{% endblock %}
+{% endblock %} {% block script %}
+<script>
+  var configDaily = {
+    type: "bar",
+    data: {
+      datasets: [
+        {
+          data: [
+            "{{dailyLap1.positive}}",
+            "{{dailyLap2.positive}}",
+            "{{dailyLap3.positive}}",
+            "{{dailyLap4.positive}}",
+            "{{dailyLap5.positive}}",
+            "{{dailyLap6.positive}}",
+            "{{dailyLap7.positive}}",
+            "{{dailyLap8.positive}}",
+          ],
+          backgroundColor: [
+            "rgba(255, 99, 132, 0.2)",
+            "rgba(255, 159, 64, 0.2)",
+            "rgba(255, 205, 86, 0.2)",
+            "rgba(75, 192, 192, 0.2)",
+            "rgba(54, 162, 235, 0.2)",
+            "rgba(153, 102, 255, 0.2)",
+            "rgba(201, 203, 207, 0.2)",
+          ],
+          borderColor: ["rgb(255, 99, 132)", "rgb(255, 159, 64)", "rgb(255, 205, 86)", "rgb(75, 192, 192)", "rgb(54, 162, 235)", "rgb(153, 102, 255)", "rgb(201, 203, 207)"],
+          borderWidth: 1,
+          label: "Daily Laptop Trends",
+        },
+      ],
+      labels: ["Oppo", "Vivo", "Xiaomi", "Apple", "Huaewai", "Google Pixel", "OnePlus", "Samsung"],
+    },
+    options: {
+      responsive: true,
+    },
+  };
+
+  // window.onload = function () {
+  //     var daily = document.getElementById("dailyGraph").getContext("2d");
+  //     window.myPie = new Chart(daily, configDaily);
+
+  // };
+
+  var config = {
+    type: "bar",
+    data: {
+      datasets: [
+        {
+          data: [
+            "{{daily1.positive}}",
+            "{{daily2.positive}}",
+            "{{daily3.positive}}",
+            "{{daily4.positive}}",
+            "{{daily5.positive}}",
+            "{{daily6.positive}}",
+            "{{daily7.positive}}",
+            "{{daily8.positive}}",
+          ],
+          backgroundColor: [
+            "rgba(255, 99, 132, 0.2)",
+            "rgba(255, 159, 64, 0.2)",
+            "rgba(255, 205, 86, 0.2)",
+            "rgba(75, 192, 192, 0.2)",
+            "rgba(54, 162, 235, 0.2)",
+            "rgba(153, 102, 255, 0.2)",
+            "rgba(201, 203, 207, 0.2)",
+          ],
+          borderColor: ["rgb(255, 99, 132)", "rgb(255, 159, 64)", "rgb(255, 205, 86)", "rgb(75, 192, 192)", "rgb(54, 162, 235)", "rgb(153, 102, 255)", "rgb(201, 203, 207)"],
+          borderWidth: 1,
+          label: "Daily Mobile Trends",
+        },
+      ],
+      labels: ["Oppo", "Vivo", "Xiaomi", "Apple", "Huaewai", "Google Pixel", "OnePlus", "Samsung"],
+    },
+    options: {
+      responsive: true,
+    },
+  };
+
+  window.onload = function () {
+    var ctx = document.getElementById("pie-chart").getContext("2d");
+    window.myPie = new Chart(ctx, config);
+    var daily = document.getElementById("dailyGraph").getContext("2d");
+    window.dailyLaptop = new Chart(daily, configDaily);
+  };
+</script>
+{% endblock script %}

@@ -1,12 +1,13 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .forms import ContactForm, CreateUserForm
-from .models import Contact, Laptop, Mobile, Mobilecomment, Specification, Wishlist
+from .models import Contact, Laptop, Mobile, Mobilecomment, Specification, Wishlist, MObiletrend, Laptoptrend
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.core.paginator import Paginator
 from .scrap import scrapmobileviapages, scrapmobiledetail, scraplaptopshophive, scraplaptopmega, scraplaptopdetailmega
+from .twitterApi import runtime_productgraph, runtime
 from django.db.models import Q
 import re
 from django.http import JsonResponse
@@ -15,10 +16,44 @@ from django.http import JsonResponse
 
 
 def home(request):
+    print("Hello World")
 
-    latest_mobile = Mobile.objects.all().filter(status="Upcoming")[:10]
+    latest_mobile = Mobile.objects.all().filter(status="Upcoming")[:13]
+    latestMobile1 = latest_mobile[0:6]
+    latestMobile2 = latest_mobile[7:13]
+    daily1 = MObiletrend.objects.get(brandName='#oppo', status="daily")
+    daily2 = MObiletrend.objects.get(brandName='#vivo', status="daily")
+    daily3 = MObiletrend.objects.get(brandName='#xiaomi', status="daily")
+    daily4 = MObiletrend.objects.get(brandName='#Apple', status="daily")
+    daily5 = MObiletrend.objects.get(brandName='#huawei', status="daily")
+    daily6 = MObiletrend.objects.get(
+        brandName='#teampixel', status="daily")
+    daily7 = MObiletrend.objects.get(brandName='#OnePlus', status="daily")
+    daily8 = MObiletrend.objects.get(
+        brandName='smartphone #samsung', status="daily")
+    dailyLap1 = Laptoptrend.objects.get(brandName='#dell', status="daily")
+    dailyLap2 = Laptoptrend.objects.get(
+        brandName='lenovo laptop', status="daily")
+    dailyLap3 = Laptoptrend.objects.get(brandName='macbook', status="daily")
+    dailyLap4 = Laptoptrend.objects.get(brandName='#hplaptop', status="daily")
+    dailyLap5 = Laptoptrend.objects.get(
+        brandName='#surfacebook', status="daily")
+    dailyLap6 = Laptoptrend.objects.get(
+        brandName='acer laptop', status="daily")
+    dailyLap7 = Laptoptrend.objects.get(
+        brandName='asus laptop', status="daily")
+    dailyLap8 = Laptoptrend.objects.get(
+        brandName='Msi laptop', status="daily")
 
-    return render(request, "Trendz/index.html", {"latest_mobile": latest_mobile})
+    popularMobile = Mobile.objects.filter(status="popular")[:5]
+    popularMac = Laptop.objects.filter(status="popular", brand="apple")[:5]
+    popularLaptop = Laptop.objects.filter(
+        status="popular").exclude(brand="apple")
+    context = {"latestMobile1": latestMobile1, "latestMobile2": latestMobile2, "daily1": daily1, "daily2": daily2, "daily3": daily3, "daily4": daily4,
+               "daily5": daily5, "daily6": daily6, "daily7": daily7, "daily8": daily8, "dailyLap1": dailyLap1, "dailyLap2": dailyLap2, "dailyLap3": dailyLap3, "dailyLap4": dailyLap4,
+               "dailyLap5": dailyLap5, "dailyLap6": dailyLap6, "dailyLap7": dailyLap7, "dailyLap8": dailyLap8, "popularMobile": popularMobile, "popularMac": popularMac, "popularLaptop": popularLaptop}
+
+    return render(request, "Trendz/index.html", context)
 
 
 def compareMobile(request):
@@ -66,12 +101,90 @@ def compareLaptop(request):
     return render(request, "Trendz/comp-Laptop.html", {"laptop1": laptop1, "laptop2": laptop2})
 
 
-def trend(request):
-    return render(request, "Trendz/top-trndz.html")
+def trendMobile(request):
+    context = {"daily": None}
+    if request.method == "POST":
+        if request.POST.get("weekly"):
+            weekly1 = MObiletrend.objects.get(
+                brandName='#oppo', status="weekly")
+            weekly2 = MObiletrend.objects.get(
+                brandName='#vivo', status="weekly")
+            weekly3 = MObiletrend.objects.get(
+                brandName='#xiaomi', status="weekly")
+            weekly4 = MObiletrend.objects.get(
+                brandName='#Apple', status="weekly")
+            weekly5 = MObiletrend.objects.get(
+                brandName='#huawei', status="weekly")
+            weekly6 = MObiletrend.objects.get(
+                brandName='#teampixel', status="weekly")
+            weekly7 = MObiletrend.objects.get(
+                brandName='#OnePlus', status="weekly")
+            weekly8 = MObiletrend.objects.get(
+                brandName='#samsung', status="weekly")
+            context = {"weekly1": weekly1, "weekly2": weekly2, "weekly3": weekly3, "weekly4": weekly4,
+                       "weekly5": weekly5, "weekly6": weekly6, "weekly7": weekly7, "weekly8": weekly8}
+            print(context)
+    else:
+        daily1 = MObiletrend.objects.get(brandName='#oppo', status="daily")
+        daily2 = MObiletrend.objects.get(brandName='#vivo', status="daily")
+        daily3 = MObiletrend.objects.get(brandName='#xiaomi', status="daily")
+        daily4 = MObiletrend.objects.get(brandName='#Apple', status="daily")
+        daily5 = MObiletrend.objects.get(brandName='#huawei', status="daily")
+        daily6 = MObiletrend.objects.get(
+            brandName='#teampixel', status="daily")
+        daily7 = MObiletrend.objects.get(brandName='#OnePlus', status="daily")
+        daily8 = MObiletrend.objects.get(
+            brandName='smartphone #samsung', status="daily")
+        context = {"daily1": daily1, "daily2": daily2, "daily3": daily3, "daily4": daily4,
+                   "daily5": daily5, "daily6": daily6, "daily7": daily7, "daily8": daily8}
+        print(context)
+    samsungMobiles = Mobile.objects.filter(
+        brand="samsung_mobiles_prices")[:6]
+    print(samsungMobiles)
+    context.update({"samsungMobiles": samsungMobiles})
+
+    return render(request, "Trendz/trendsMobile.html", context)
 
 
-def rated(request):
-    return render(request, "Trendz/rat-product.html")
+def trendLaptop(request):
+    context = {"daily": None}
+    if request.method == "POST":
+        if request.POST.get("weekly"):
+            weekly1 = Laptoptrend.objects.get(
+                brandName='#dell', status="weekly")
+            weekly2 = Laptoptrend.objects.get(
+                brandName='lenovo laptop', status="weekly")
+            weekly3 = Laptoptrend.objects.get(
+                brandName='macbook', status="weekly")
+            weekly4 = Laptoptrend.objects.get(
+                brandName='#hplaptop', status="weekly")
+            weekly5 = Laptoptrend.objects.get(
+                brandName='#surfacebook', status="weekly")
+            weekly6 = Laptoptrend.objects.get(
+                brandName='acer laptop', status="weekly")
+            weekly7 = Laptoptrend.objects.get(
+                brandName='asus laptop', status="weekly")
+            weekly8 = Laptoptrend.objects.get(
+                brandName='Msi laptop', status="weekly")
+            context = {"weekly1": weekly1, "weekly2": weekly2, "weekly3": weekly3, "weekly4": weekly4,
+                       "weekly5": weekly5, "weekly6": weekly6, "weekly7": weekly7, "weekly8": weekly8}
+    else:
+        daily1 = Laptoptrend.objects.get(brandName='#dell', status="daily")
+        daily2 = Laptoptrend.objects.get(
+            brandName='lenovo laptop', status="daily")
+        daily3 = Laptoptrend.objects.get(brandName='macbook', status="daily")
+        daily4 = Laptoptrend.objects.get(brandName='#hplaptop', status="daily")
+        daily5 = Laptoptrend.objects.get(
+            brandName='#surfacebook', status="daily")
+        daily6 = Laptoptrend.objects.get(
+            brandName='acer laptop', status="daily")
+        daily7 = Laptoptrend.objects.get(
+            brandName='asus laptop', status="daily")
+        daily8 = Laptoptrend.objects.get(
+            brandName='Msi laptop', status="daily")
+        context = {"daily1": daily1, "daily2": daily2, "daily3": daily3, "daily4": daily4,
+                   "daily5": daily5, "daily6": daily6, "daily7": daily7, "daily8": daily8}
+    return render(request, "Trendz/trendsLaptop.html", context)
 
 
 def contact(request):
@@ -132,38 +245,42 @@ def signuppage(request):
 def devicelistpage(request, brand_name):
 
     page_obj = None
+    Brand = None
     if brand_name == "latest-phone":
         Query = Mobile.objects.all().filter(status="Upcoming").order_by('id')
         paginator = Paginator(Query, 20)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
+    elif brand_name == "popular-phone":
+        Query = Mobile.objects.all().filter(status="popular").order_by('id')
+        paginator = Paginator(Query, 20)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
     else:
-        if not request.GET.get('page'):
-            scrapmobileviapages(brand_name)
-
         Query = Mobile.objects.all().filter(brand=brand_name).order_by('id')
+        for Obj in Query[:1]:
+            Brand = Obj
         paginator = Paginator(Query, 20)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
 
-    return render(request, "Trendz/devicelist.html", {'page_obj': page_obj})
+    return render(request, "Trendz/devicelist.html", {'page_obj': page_obj, "Brand": Brand})
 
 
 def phonedetailpage(request, device_name):
 
     context = scrapmobiledetail(device_name)
     mobile = Mobile.objects.get(tag=device_name)
+    mobileGraph = runtime_productgraph(mobile.title)
     wishlist = Wishlist.objects.filter(mobile=mobile)
     comments = Mobilecomment.objects.filter(mobile=mobile, parent=None)
     replies = Mobilecomment.objects.filter(mobile=mobile).exclude(parent=None)
     context.update(
-        {'comments': comments, 'mobile': mobile, 'replies': replies, "wishlist": wishlist})
+        {'comments': comments, 'mobile': mobile, 'replies': replies, "wishlist": wishlist, "mobileGraph": mobileGraph})
     return render(request, "Trendz/phonedetail.html", context)
 
 
 def laptoplistpage(request, brand_name):
-    if not request.GET.get('page'):
-        scraplaptopmega(brand_name)
 
     query = Laptop.objects.all().filter(brand=brand_name).order_by('id')
     paginator = Paginator(query, 20)
@@ -177,6 +294,7 @@ def laptopdetailpage(request, device_name):
 
     context = scraplaptopdetailmega(device_name)
     laptop = Laptop.objects.get(tag1=device_name)
+    print(laptop.id)
     wishlist = Wishlist.objects.filter(laptop=laptop)
     context.update({"wishlist": wishlist, "laptop": laptop})
 
@@ -267,7 +385,25 @@ def wishlistdata(request):
 
 
 def wishlist(request):
+    wishlistLaptop = None
+    wishlistMobile = None
     if request.user.is_authenticated:
         user = request.user
-        wishlist = Wishlist.objects.filter(user=user)
-    return render(request, "Trendz/wishlist.html", {"wishlist": wishlist})
+        wishlistLaptop = Wishlist.objects.filter(
+            user=user).exclude(laptop=None)
+        print(wishlistLaptop)
+        wishlistMobile = Wishlist.objects.filter(
+            user=user).exclude(mobile=None)
+        print(wishlistMobile)
+    return render(request, "Trendz/wishlist.html", {"wishlistLaptop": wishlistLaptop, "wishlistMobile": wishlistMobile})
+
+
+def Report(request, Name):
+
+    if Name == "Mobile":
+        searchTerm = ['#oppo', '#vivo', '#xiaomi', 'Apple iphone',
+                      '#huawei', '#teampixel', '#OnePlus', '#samsung']
+        context = runtime(searchTerm)
+        print(context)
+
+    return render(request, "Trendz/Report.html", context)

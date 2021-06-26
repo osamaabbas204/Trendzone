@@ -1,0 +1,155 @@
+{% extends "Trendz/main.html" %} {% block title %} Trendzone {% endblock %} {% block style %}
+<style>
+  .block {
+    height: 800px;
+  }
+  .Mobile {
+    text-align: center;
+    font-size: 30px;
+  }
+  .Laptop {
+    text-align: center;
+    font-size: 30px;
+  }
+  .compareTabs a {
+    text-decoration: none;
+    color: #303f4a;
+    border-bottom: 5px solid;
+  }
+  .tab i {
+    display: flex;
+    justify-content: center;
+  }
+  .tab span {
+    display: block;
+  }
+  .compareTabs :hover {
+    color: blue;
+  }
+  .compareTabs .active {
+    color: blue;
+  }
+  form {
+    display: inline;
+  }
+</style>
+{% endblock style %} {% block body %}
+<div class="container">
+  <div class="row justify-content-between">
+    <div class="col-md-4">
+      <div class="compareTabs row my-5">
+        <a id="mobile" class="col tab" style="padding: 0px 0px !important" href="{% url 'trend' %}">
+          <i class="fa fa-mobile fa-3x" aria-hidden="true"></i>
+          <span class="Mobile">Mobile</span>
+        </a>
+        <a id="laptop" class="col tab active" style="padding: 0px 0px !important" href="{% url 'trendlaptop' %}">
+          <i class="fa fa-laptop fa-3x"></i>
+          <span class="Laptop">Laptop</span>
+        </a>
+      </div>
+    </div>
+    <div class="col-2 my-4">
+      <a class="btn btn-outline-success" href="{% url 'Report' 'Laptop' %}" role="button">Laptop Report</a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <a class="btn btn-outline-primary me-2" href="{% url 'trendlaptop' %}" role="button">Daily</a>
+      <form class="me-2" action="{% url 'trendlaptop' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="weekly" value="weekly" />
+        <button type="submit" value="submit" class="btn btn-outline-danger">Weekly</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="container mb-5">
+  <div class="row">
+    <div class="col">
+      {% if daily1 %}
+      <canvas id="dailyGraph"></canvas>
+      {% else %}
+      <canvas id="weeklyGraph"></canvas>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% endblock %} {% block script %}
+<script>
+  var configDaily = {
+    type: "bar",
+    data: {
+      datasets: [
+        {
+          data: [
+            "{{daily1.positive}}",
+            "{{daily2.positive}}",
+            "{{daily3.positive}}",
+            "{{daily4.positive}}",
+            "{{daily5.positive}}",
+            "{{daily6.positive}}",
+            "{{daily7.positive}}",
+            "{{daily8.positive}}",
+          ],
+          backgroundColor: [
+            "rgba(255, 99, 132, 0.2)",
+            "rgba(255, 159, 64, 0.2)",
+            "rgba(255, 205, 86, 0.2)",
+            "rgba(75, 192, 192, 0.2)",
+            "rgba(54, 162, 235, 0.2)",
+            "rgba(153, 102, 255, 0.2)",
+            "rgba(201, 203, 207, 0.2)",
+          ],
+          borderColor: ["rgb(255, 99, 132)", "rgb(255, 159, 64)", "rgb(255, 205, 86)", "rgb(75, 192, 192)", "rgb(54, 162, 235)", "rgb(153, 102, 255)", "rgb(201, 203, 207)"],
+          borderWidth: 1,
+          label: "Daily Laptop Trends",
+        },
+      ],
+      labels: ["Oppo", "Vivo", "Xiaomi", "Apple", "Huaewai", "Google Pixel", "OnePlus", "Samsung"],
+    },
+    options: {
+      responsive: true,
+    },
+  };
+
+  var configWeekly = {
+    type: "line",
+    data: {
+      datasets: [
+        {
+          data: [
+            "{{weekly1.positive}}",
+            "{{weekly2.positive}}",
+            "{{weekly3.positive}}",
+            "{{weekly4.positive}}",
+            "{{weekly5.positive}}",
+            "{{weekly6.positive}}",
+            "{{weekly7.positive}}",
+            "{{weekly8.positive}}",
+          ],
+          fill: false,
+          borderColor: "rgb(75, 192, 192)",
+          tension: 0.1,
+          label: "Weekly Laptop Trends",
+        },
+      ],
+      labels: ["Oppo", "Vivo", "Xiaomi", "Apple", "Huaewai", "Google Pixel", "OnePlus", "Samsung"],
+    },
+    options: {
+      responsive: true,
+    },
+  };
+
+  window.onload = function () {
+    if (document.getElementById("dailyGraph")) {
+      var daily = document.getElementById("dailyGraph").getContext("2d");
+      window.myPie = new Chart(daily, configDaily);
+    } else {
+      var weekly = document.getElementById("weeklyGraph").getContext("2d");
+      window.myPie = new Chart(weekly, configWeekly);
+    }
+  };
+</script>
+{% endblock script %}

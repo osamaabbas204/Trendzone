@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="{% static '/css/phonedetail.css' %}" />
 {% endblock style %} {% block title %} Trendzone {% endblock %} {% block body %}
 
-<div class="container">
+<div class="container my-5">
   <div class="row">
     <div class="col-md-6 text-center">
       <div class="row justify-content-end">
@@ -37,7 +37,7 @@
                     ><img width="50" height="50" src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/camera-grp.png"
                   /></noscript>
                 </div>
-                <div class="col spec-dt"><span style="color: #303f4a; font-size: 16px"></span> Camera</div>
+                <div class="col spec-dt"><span style="color: #303f4a; font-size: 16px">{{datadict.Camera}}</span> Camera</div>
               </div>
             </li>
             <li class="col-6 p-0">
@@ -48,7 +48,7 @@
                   /></noscript>
                 </div>
                 <div class="col spec-dt">
-                  <span style="color: #303f4a; font-size: 16px">{{data_listmega.0}}</span>
+                  <span style="color: #303f4a; font-size: 16px">{{datadict.ProcessorType}} {{datadict.ProcessorSpeed}}</span>
                   Processor
                 </div>
               </div>
@@ -61,7 +61,7 @@
                   /></noscript>
                 </div>
                 <div class="col spec-dt">
-                  <span style="color: #303f4a; font-size: 16px">{{data_listmega.2}}</span>
+                  <span style="color: #303f4a; font-size: 16px">{{datadict.Maximummemory}} {{datadict.Typeofmemory}}</span>
                   Internal Storage
                 </div>
               </div>
@@ -73,7 +73,7 @@
                     ><img width="50" height="50" src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/battery-grp.png"
                   /></noscript>
                 </div>
-                <div class="col spec-dt"><span style="color: #303f4a; font-size: 16px"></span> Battery</div>
+                <div class="col spec-dt"><span style="color: #303f4a; font-size: 16px">{{datadict.Batterytype}} {{datadict.Batterylife}}</span> Battery</div>
               </div>
             </li>
             <li class="col-6 p-0">
@@ -84,7 +84,7 @@
                   /></noscript>
                 </div>
                 <div class="col spec-dt">
-                  <span style="color: #303f4a; font-size: 16px">{{data_listmega.3}}</span>
+                  <span style="color: #303f4a; font-size: 16px">{{datadict.InstalledRAM}}</span>
                   Memory (RAM)
                 </div>
               </div>
@@ -97,7 +97,7 @@
                   /></noscript>
                 </div>
                 <div class="col spec-dt">
-                  <span style="color: #303f4a; font-size: 16px">{{data_listmega.4}}</span>
+                  <span style="color: #303f4a; font-size: 16px">{{datadict.Screenresolution}}</span>
                   Dispaly
                 </div>
               </div>
@@ -133,11 +133,7 @@
               {% for head,data in datadictmega %}
               <tr>
                 <td>{{head}}</td>
-                {% if 'NULL' in data %}
-                <td>-</td>
-                {% else %}
                 <td>{{data}}</td>
-                {% endif %}
               </tr>
               {% endfor %}
               <tr></tr>
@@ -151,6 +147,7 @@
 
 {% endblock %} {% block script %}
 <script>
+  console.log("Hello world!");
   function senddata(laptop) {
     function getCookie(name) {
       let cookieValue = null;

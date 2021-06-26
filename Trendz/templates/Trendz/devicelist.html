@@ -1,44 +1,91 @@
 {% extends "Trendz/main.html" %} {% load static %} {% block style %}
-<link rel="stylesheet" href="{% static '/css/devicelist.css' %}" />
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: "Open Sans", sans-serif;
+    color: #303f4a;
+  }
+  .title-more {
+    display: flex;
+  }
+  .product-item {
+    display: flex;
+    width: 180px;
+    height: 300px;
+    list-style: none;
+    flex-direction: column;
+    text-decoration: none;
+    background-color: transparent;
+    margin-right: 25px;
+  }
+  .image {
+    display: flex;
+    justify-content: center;
+  }
+  .status {
+    font-size: 11px;
+    color: #a80500;
+    text-align: center;
+    margin-top: 0px;
+    font-weight: 600;
+  }
+  .brand-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: #303f4a;
+    text-align: center;
+    overflow: hidden;
+    line-height: 1.5em;
+    height: 3em;
+  }
+  .price {
+    text-align: center;
+    font-size: 16px;
+    color: #303f4a;
+  }
+  .price span {
+    color: #0984e3;
+    font-weight: 700;
+  }
+  .page-title {
+    color: #0984e3;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 33px;
+    margin-bottom: 23px;
+  }
+</style>
 {% endblock style %} {% block title %} Trendzone {% endblock %} {% block body %}
 
-<div class="container">
+<div class="container my-5">
+  {% if page_obj %}
+  <h3 class="page-title"><span style="text-transform: uppercase">{{Brand.brand}}</span></h3>
   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
     {% for obj in page_obj %}
-    <div>
-      <article class="u-shadow-v18 g-bg-white text-center rounded pt-2 pb-2">
-        <a href="{% url 'phonedetail' obj.tag %}">
-          <img src="{{obj.image}}" />
-        </a>
-        <a class="title" href="{% url 'phonedetail' obj.tag %}">
-          <h4 class="h5">{{obj.title}}</h4>
-        </a>
-        <span class="d-block g-color-primary g-font-size-16"
-          >{{obj.price}}Rs</span
-        >
-      </article>
-    </div>
+    <a class="product-item" href="{% url 'phonedetail' obj.tag %}">
+      <div class="image"><img height="199px" width="149px" src="{{obj.image}}" alt="Nothing Show" /></div>
+      {% if obj.status == "None" %} {%else%}
+      <div class="status">{{obj.status}}</div>
+      {% endif %}
+      <div class="brand-name">{{obj.title}}</div>
+      <div class="price"><span>{{ obj.price }}</span>RS</div>
+    </a>
 
     {% endfor %}
   </div>
+  {% endif %}
 </div>
 
 <div class="container">
   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
     {% for obj in page_obj1 %}
-    <div>
-      <article class="u-shadow-v18 g-bg-white text-center rounded pt-2 pb-2">
-        <a href="{% url 'laptopdetail' obj.tag1 %}">
-          <img src="{{obj.image}}" />
-        </a>
-        <a class="title" href="{% url 'laptopdetail' obj.tag1 %}">
-          <h4 class="h5">{{obj.title}}</h4>
-        </a>
-        <span class="d-block g-color-primary g-font-size-16"
-          >{{obj.price}}</span
-        >
-      </article>
-    </div>
+    <a class="product-item" href="{% url 'laptopdetail' obj.tag1 %}">
+      <div class="image"><img height="199px" width="149px" src="{{obj.image}}" alt="Nothing Show" /></div>
+      <div class="price"><span>{{ obj.price }}</span></div>
+      <div class="brand-name">{{obj.title}}</div>
+    </a>
 
     {% endfor %}
   </div>
@@ -46,10 +93,10 @@
 
 {% if page_obj %}
 
-<nav style="margin-top: 25px;">
+<nav style="margin-top: 25px">
   <ul class="pagination justify-content-center">
     {% if page_obj.has_previous %}
-    <li class="page-item ">
+    <li class="page-item">
       <a class="page-link" href="?page=1">First</a>
     </li>
     <li class="page-item">
@@ -74,7 +121,7 @@
 <nav>
   <ul class="pagination justify-content-center">
     {% if page_obj1.has_previous %}
-    <li class="page-item ">
+    <li class="page-item">
       <a class="page-link" href="?page=1">First</a>
     </li>
     <li class="page-item">

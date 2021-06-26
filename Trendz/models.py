@@ -18,6 +18,7 @@ class Laptop(models.Model):
     tag1 = models.CharField(max_length=200)
     brand = models.CharField(max_length=50)
     site = models.CharField(max_length=50)
+    status = models.CharField(max_length=50, null=True)
 
     def __str__(self):
         return self.title
@@ -85,6 +86,7 @@ class Mobilespec(models.Model):
         Mobile, on_delete=models.CASCADE, primary_key=True)
     title = models.CharField(max_length=250)
     tag = models.CharField(max_length=250)
+    rating = models.IntegerField(null=True)
     camera = models.CharField(max_length=50, null=True)
     processor = models.CharField(max_length=50, null=True)
     internal_storage = models.CharField(max_length=50, null=True)
@@ -113,3 +115,27 @@ class Wishlist(models.Model):
 
     def __str__(self):
         return self.user.username + " Wished "
+
+
+class MObiletrend(models.Model):
+
+    brandName = models.CharField(max_length=50)
+    status = models.CharField(max_length=50)
+    positive = models.FloatField()
+    negative = models.FloatField()
+    neutral = models.FloatField()
+
+    def __str__(self):
+        return self.brandName + self.status + "Trends"
+
+
+class Laptoptrend(models.Model):
+
+    brandName = models.CharField(max_length=50)
+    status = models.CharField(max_length=50)
+    positive = models.FloatField()
+    negative = models.FloatField()
+    neutral = models.FloatField()
+
+    def __str__(self):
+        return self.brandName + self.status + "Trends"

@@ -30,10 +30,12 @@
     <div class="col-md-6 text-center">
       <div class="row justify-content-end">
         <div class="col-3">
-          {% if wishlist %}
+          {% if request.user.is_authenticated %} {% if wishlist.user == request.user %}
           <button id="Wishlist-btn" data-user="{{user.id}}" data-mobile="{{mobile.id}}" type="sumbit" class="btn btn-success btn-sm active">Wishlist</button>
           {% else %}
           <button id="Wishlist-btn" data-user="{{user.id}}" data-mobile="{{mobile.id}}" type="sumbit" class="btn btn-primary btn-sm">Wishlist</button>
+          {% endif %} {% else %}
+          <button onclick="alertWishlist()" type="button" class="btn btn-primary btn-sm">Wishlist</button>
           {% endif %}
         </div>
       </div>
@@ -59,7 +61,19 @@
             <span class="price"> {% if price %} {{price}} {% elif price_mega %} {{price_mega}} {%endif %} </span>
             <small>RS</small>
           </div>
+          {{rating}} {% if rating >= 10 %}
+          <div class="rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></div>
+          {% elif rating >= 8 %}
           <div class="rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i></div>
+          {% elif rating >= 6 %}
+          <div class="rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></div>
+          {% elif rating >= 4 %}
+          <div class="rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></div>
+          {% elif rating >= 2 %}
+          <div class="rating"><i class="fa fa-star"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></div>
+          {% else %}
+          <div class="rating"><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></div>
+          {% endif %}
         </div>
       </div>
       <div class="row">
@@ -453,6 +467,9 @@
         </div>
       </div>
     </div>
+    <div class="col-4">
+      <canvas width="300" height="300" id="mobileChart"></canvas>
+    </div>
   </div>
 </div>
 
@@ -559,6 +576,28 @@
 
 {% endblock %} {% block script %}
 <script>
+  var configMobile = {
+    type: "pie",
+    data: {
+      datasets: [
+        {
+          data: ["{{mobileGraph.positive}}", "{{mobileGraph.negative}}", "{{mobileGraph.neutral}}"],
+          backgroundColor: ["#696969", "#808080", "#A9A9A9", "#C0C0C0", "#D3D3D3"],
+          label: "Population",
+        },
+      ],
+      labels: ["Positive", "Negative", "Neutral"],
+    },
+    options: {
+      responsive: false,
+    },
+  };
+
+  window.onload = function () {
+    var mobile = document.getElementById("mobileChart").getContext("2d");
+    window.myPie = new Chart(mobile, configMobile);
+  };
+
   function senddata(mobile) {
     function getCookie(name) {
       let cookieValue = null;
@@ -618,5 +657,9 @@
       }
     }
   });
+
+  function alertWishlist() {
+    alert("Please Login to add item in a Wishlist");
+  }
 </script>
 {% endblock script %}

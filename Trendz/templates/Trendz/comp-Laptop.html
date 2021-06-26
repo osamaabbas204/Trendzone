@@ -86,49 +86,46 @@
   }
   .Mobile {
     text-align: center;
-    height: 70px;
-    text-decoration: none;
+    font-size: 30px;
   }
   .Laptop {
     text-align: center;
-    height: 70px;
+    font-size: 30px;
+  }
+  .compareTabs a {
     text-decoration: none;
-  }
-  .Mobile p {
-    padding: 20px 0px;
     color: #303f4a;
-    font-size: 20px;
+    border-bottom: 5px solid;
   }
-  .Mobile p:hover {
+  .tab i {
+    display: flex;
+    justify-content: center;
+  }
+  .tab span {
+    display: block;
+  }
+  .compareTabs :hover {
     color: blue;
-    background-color: rgba(111, 109, 250, 0.5);
   }
-  .Laptop p:hover {
+  .compareTabs .active {
     color: blue;
-    background-color: rgba(111, 109, 250, 0.5);
-  }
-  .Laptop p {
-    padding: 20px 0px;
-    color: #303f4a;
-    font-size: 20px;
-  }
-  .compareTabs {
-    margin: 20px 0px;
   }
 </style>
 {% endblock style %} {% block title %} Trendzone {% endblock %} {% block body %}
 <div class="container">
   <div class="row">
     <div class="col-md-9">
-      <div class="compareTabs row">
-        <a class="col" href="{% url 'compareMobile' %}">
-          <div class="Mobile"><p>Mobile</p></div>
+      <div class="compareTabs row my-5">
+        <a id="mobile" class="col tab" style="padding: 0px 0px !important" href="{% url 'compareMobile' %}">
+          <i class="fa fa-mobile fa-3x" aria-hidden="true"></i>
+          <span class="Mobile">Mobile</span>
         </a>
-        <a class="col" href="{% url 'compareLaptop' %}">
-          <div class="Laptop"><p>Laptop</p></div>
+        <a id="laptop" class="col tab active" style="padding: 0px 0px !important" href="{% url 'compareLaptop' %}">
+          <i class="fa fa-laptop fa-3x"></i>
+          <span class="Laptop">Laptop</span>
         </a>
       </div>
-      <div class="compare-search container">
+      <div class="compare-search container mb-4">
         <h3>Compare Laptop</h3>
         <form class="mb-2 mb-lg-0" action="{% url 'compareLaptop' %}">
           <div class="row mb-4">

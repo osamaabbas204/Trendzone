@@ -53,10 +53,11 @@
   }
 </style>
 {% endblock style %} {% block body %}
-<div class="container">
-  <h3>Mobile</h3>
+<div class="container my-3">
+  <h3 class="mb-3">Mobile</h3>
+  {% if request.user.is_authenticated %} {% if wishlistMobile %}
   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
-    {% for wish in wishlist %} {% if wish.mobile %}
+    {% for wish in wishlistMobile %}
     <div class="product-item">
       <div class="image">
         <a href="{% url 'phonedetail' wish.mobile.tag %}"> <img height="199px" width="149px" src="{{wish.mobile.image}}" alt="Nothing Show" /></a>
@@ -70,13 +71,27 @@
       <a style="text-decoration: none" href="{% url 'phonedetail' wish.mobile.tag %}"> <div class="brand-name">{{wish.mobile.title}}</div></a>
       <div class="price"><span>{{ wish.mobile.price }}</span>RS</div>
     </div>
-    {% endif %} {% endfor %}
+    {% endfor %}
   </div>
+  {% else %}
+  <div class="row justify-content-center">
+    <div class="col-6">
+      <div class="alert alert-primary" role="alert">Wishlist is empty</div>
+    </div>
+  </div>
+  {% endif %} {% else %}
+  <div class="row justify-content-center">
+    <div class="col-6">
+      <div class="alert alert-primary" role="alert">Please Login to Add item to a Wishlist</div>
+    </div>
+  </div>
+  {% endif %}
 </div>
-<div class="container">
-  <h3>Laptop</h3>
+<div class="container mt-4" style="margin-bottom: 100px">
+  <h3 class="mb-3">Laptop</h3>
+  {% if request.user.is_authenticated %} {% if wishlistLaptop %}
   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
-    {% for wish in wishlist %} {% if wish.laptop %}
+    {% for wish in wishlistLaptop %}
     <div class="product-item">
       <div class="image">
         <a href="{% url 'phonedetail' wish.laptop.tag1 %}"> <img height="199px" width="149px" src="{{wish.laptop.image}}" alt="Nothing Show" /></a>
@@ -87,8 +102,21 @@
       <a style="text-decoration: none" href="{% url 'phonedetail' wish.laptop.tag1 %}"> <div class="brand-name">{{wish.laptop.title}}</div></a>
       <div class="price"><span>{{ wish.laptop.price }}</span>RS</div>
     </div>
-    {% endif %} {% endfor %}
+    {% endfor %}
   </div>
+  {% else %}
+  <div class="row justify-content-center">
+    <div class="col-6">
+      <div class="alert alert-primary" role="alert">Wishlist is empty</div>
+    </div>
+  </div>
+  {% endif %} {% else %}
+  <div class="row justify-content-center">
+    <div class="col-6">
+      <div class="alert alert-primary" role="alert">Please Login to Add item to a Wishlist</div>
+    </div>
+  </div>
+  {% endif %}
 </div>
 {% endblock %} {% block script %}
 <script>
@@ -124,7 +152,7 @@
       },
       success: function (data) {
         console.log(data);
-        setInterval("refreshPage()", 1000);
+        setInterval("refreshPage()", 500);
       },
       error: function (error) {
         console.log(error);

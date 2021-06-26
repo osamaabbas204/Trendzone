@@ -1,0 +1,220 @@
+{% extends "Trendz/main.html" %} {% block title %} Trendzone {% endblock %} {% block style %}
+<style>
+  .block {
+    height: 800px;
+  }
+  .Mobile {
+    text-align: center;
+    font-size: 30px;
+  }
+  .Laptop {
+    text-align: center;
+    font-size: 30px;
+  }
+  .compareTabs a {
+    text-decoration: none;
+    color: #303f4a;
+    border-bottom: 5px solid;
+  }
+  .tab i {
+    display: flex;
+    justify-content: center;
+  }
+  .tab span {
+    display: block;
+  }
+  .compareTabs :hover {
+    color: blue;
+  }
+  .compareTabs .active {
+    color: blue;
+  }
+  form {
+    display: inline;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: "Open Sans", sans-serif;
+    color: #303f4a;
+  }
+  .title-more {
+    display: flex;
+  }
+  .product-item {
+    display: flex;
+    width: 180px;
+    height: 300px;
+    list-style: none;
+    flex-direction: column;
+    text-decoration: none;
+    background-color: transparent;
+    margin-right: 25px;
+  }
+  .image {
+    display: flex;
+    justify-content: center;
+  }
+  .status {
+    font-size: 11px;
+    color: #a80500;
+    text-align: center;
+    margin-top: 0px;
+    font-weight: 600;
+  }
+  .brand-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: #303f4a;
+    text-align: center;
+    overflow: hidden;
+    line-height: 1.5em;
+    height: 3em;
+  }
+  .price {
+    text-align: center;
+    font-size: 16px;
+    color: #303f4a;
+  }
+  .price span {
+    color: #0984e3;
+    font-weight: 700;
+  }
+</style>
+{% endblock style %} {% block body %}
+<div class="container">
+  <div class="row justify-content-between">
+    <div class="col-md-4">
+      <div class="compareTabs row my-5">
+        <a id="mobile" class="col tab active" style="padding: 0px 0px !important" href="{% url 'trend' %}">
+          <i class="fa fa-mobile fa-3x" aria-hidden="true"></i>
+          <span class="Mobile">Mobile</span>
+        </a>
+        <a id="laptop" class="col tab" style="padding: 0px 0px !important" href="{% url 'trendlaptop' %}">
+          <i class="fa fa-laptop fa-3x"></i>
+          <span class="Laptop">Laptop</span>
+        </a>
+      </div>
+    </div>
+    <div class="col-md-2 my-4">
+      <a class="btn btn-outline-success" href="{% url 'Report' 'Mobile' %}" role="button">Mobile Report</a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <a class="btn btn-outline-primary" href="{% url 'trend' %}" role="button">Daily</a>
+      <form class="me-2" action="{% url 'trend' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="weekly" value="weekly" />
+        <button type="submit" value="submit" class="btn btn-outline-danger">Weekly</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col">
+      {% if daily1 %}
+      <canvas id="dailyGraph"></canvas>
+      {% else %}
+      <canvas id="weeklyGraph"></canvas>
+      {% endif %}
+    </div>
+  </div>
+  <div class="row my-4">
+    <h3>Top Samsung Mobile</h3>
+    <div class="row justify-content-between">
+      {% for mobile in samsungMobiles %}
+      <div class="col-2">
+        <a class="product-item" href="{% url 'phonedetail' mobile.tag %}">
+          <div class="image"><img height="199px" width="149px" src="{{mobile.image}}" alt="Nothing Show" /></div>
+          {% if mobile.status == "None" %} {%else%}
+          <div class="status">{{mobile.status}}</div>
+          {% endif %}
+          <div class="brand-name">{{mobile.title}}</div>
+          <div class="price"><span>{{ mobile.price }}</span>RS</div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %} {% block script %}
+<script>
+  var configDaily = {
+    type: "bar",
+    data: {
+      datasets: [
+        {
+          data: [
+            "{{daily1.positive}}",
+            "{{daily2.positive}}",
+            "{{daily3.positive}}",
+            "{{daily4.positive}}",
+            "{{daily5.positive}}",
+            "{{daily6.positive}}",
+            "{{daily7.positive}}",
+            "{{daily8.positive}}",
+          ],
+          backgroundColor: [
+            "rgba(255, 99, 132, 0.2)",
+            "rgba(255, 159, 64, 0.2)",
+            "rgba(255, 205, 86, 0.2)",
+            "rgba(75, 192, 192, 0.2)",
+            "rgba(54, 162, 235, 0.2)",
+            "rgba(153, 102, 255, 0.2)",
+            "rgba(201, 203, 207, 0.2)",
+          ],
+          borderColor: ["rgb(255, 99, 132)", "rgb(255, 159, 64)", "rgb(255, 205, 86)", "rgb(75, 192, 192)", "rgb(54, 162, 235)", "rgb(153, 102, 255)", "rgb(201, 203, 207)"],
+          borderWidth: 1,
+          label: "Daily Mobile Trends",
+        },
+      ],
+      labels: ["Oppo", "Vivo", "Xiaomi", "Apple", "Huaewai", "Google Pixel", "OnePlus", "Samsung"],
+    },
+    options: {
+      responsive: true,
+    },
+  };
+
+  var configWeekly = {
+    type: "line",
+    data: {
+      datasets: [
+        {
+          data: [
+            "{{weekly1.positive}}",
+            "{{weekly2.positive}}",
+            "{{weekly3.positive}}",
+            "{{weekly4.positive}}",
+            "{{weekly5.positive}}",
+            "{{weekly6.positive}}",
+            "{{weekly7.positive}}",
+            "{{weekly8.positive}}",
+          ],
+          fill: false,
+          borderColor: "rgb(75, 192, 192)",
+          tension: 0.1,
+          label: "Weekly Mobile Trends",
+        },
+      ],
+      labels: ["Oppo", "Vivo", "Xiaomi", "Apple", "Huaewai", "Google Pixel", "OnePlus", "Samsung"],
+    },
+    options: {
+      responsive: true,
+    },
+  };
+
+  window.onload = function () {
+    if (document.getElementById("dailyGraph")) {
+      var daily = document.getElementById("dailyGraph").getContext("2d");
+      window.myPie = new Chart(daily, configDaily);
+    } else {
+      var weekly = document.getElementById("weeklyGraph").getContext("2d");
+      window.myPie = new Chart(weekly, configWeekly);
+    }
+  };
+</script>
+{% endblock script %}

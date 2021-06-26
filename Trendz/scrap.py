@@ -41,6 +41,72 @@ def parse_url(url):
     return content, soup, ct
 
 
+def scrapmobile():
+
+    mobilelist = ['samsung_mobiles_prices', 'apple', 'vivo', 'xiaomi', 'oppo',
+                  'huawei', 'google', 'oneplus', 'nokia', 'asus', 'infinix', 'realme']
+
+    for mobile in mobilelist:
+        scrapmobileviapages(mobile)
+    pass
+
+
+def scraplaptop():
+
+    laptoplist = ['apple', 'hp', 'dell',
+                  'microsoft', 'asus', 'lenovo', 'acer', 'msi']
+
+    for laptop in laptoplist:
+        scraplaptopmega(laptop)
+
+    pass
+
+
+def popularMobile():
+    test = parse_url(
+        f"https://propakistani.pk/price/popular-phones-price-in-pakistan/")
+    soup = test[1]
+    popularMobiles = soup.find_all('div', class_='title')
+    popularlist = []
+    for mobile in popularMobiles:
+        popularlist.append(mobile.text.replace("\n", ""))
+    print(popularlist)
+
+    for popular in popularlist:
+        if Mobile.objects.filter(title=popular):
+            Mobile.objects.filter(title=popular).update(status="popular")
+
+    pass
+
+
+def popularLaptop():
+    popularlist = []
+    popularmac = []
+    test = parse_url(
+        f"https://www.mega.pk/")
+    test1 = parse_url(
+        f"https://www.mega.pk/ajax.php?key=home-grid&option1=7&option2=34")
+    soup = test[1]
+    soup1 = test1[1]
+    laptopdiv = soup.find('div', id='mycarousel1')
+    laptopdiv1 = soup1.find('div', id='mycarousel34')
+    names1 = laptopdiv1.find_all('div', id='lap_name_div')
+    Names = laptopdiv.find_all('div', id='lap_name_div')
+    for name in Names:
+        popularlist.append(name.text.replace("\n", ""))
+    for laptop in names1:
+        popularmac.append(laptop.text.replace("\n", ""))
+    print(popularmac)
+    # for popular in popularlist:
+    #     if Laptop.objects.filter(title=popular):
+    #         Laptop.objects.filter(title=popular).update(status="popular")
+    for popular in popularmac:
+        if Laptop.objects.filter(title=popular):
+            Laptop.objects.filter(title=popular).update(status="popular")
+
+    pass
+
+
 def scrapmobileviapages(brand_name):
 
     html_data = parse_url(f"https://propakistani.pk/price/brand/{brand_name}/")
@@ -75,7 +141,10 @@ def scrapmobilelist(brand_name):
     tag_list = []
     status_list = []
     for result in results:
-        image = result.find("div", class_="thumb").a.img['data-lazy-src']
+        try:
+            image = result.find("div", class_="thumb").a.img['data-lazy-src']
+        except:
+            image = "error"
         title = result.find("div", class_="title").text
         href = result.find("div", class_="title").a['href']
         price = result.find("div", class_="price").span.text
@@ -145,6 +214,9 @@ def scrapmobiledetail(device_name):
     price = soup.find("div", class_="price").span.text
     image = soup.find("div", class_="slickSlider").img['data-lazy-src']
     specs = soup.find_all("div", class_="row spec-wr mx-0")
+    rating = soup.find("div", class_="review-head").div.div.span.text
+    rating1 = int(rating)
+    print(rating)
     status = soup.find('div', class_='score mt-0 mb-2').text
     for spec in specs:
         tex0 = spec.find('span').text
@@ -172,7 +244,7 @@ def scrapmobiledetail(device_name):
                     data_list[key] = child[1].text
 
     detail = {"title": title, "price": price, "image": image,
-              "data_list": data_list, "specs_list": Dict_spec, 'status': status}
+              "data_list": data_list, "specs_list": Dict_spec, 'status': status, "rating": int(rating)}
 
     Query = Mobilespec.objects.filter(title=title)
     obj1 = None
@@ -209,6 +281,7 @@ def scrapmobiledetail(device_name):
         reg = Mobilespec(mobile=Mobile.objects.get(title=title),
                          title=title,
                          tag=device_name,
+                         rating=rating1,
                          camera=Dict_spec['camera'],
                          processor=Dict_spec['processor'],
                          internal_storage=Dict_spec['internal_storage'],
@@ -311,21 +384,27 @@ def scraplaptopdetailmega(device_name):
     soup = test[1]
     image = soup.find('div', itemprop='image').img['data-original']
     title = soup.find('h1', class_='product-title').span.text
-    price = soup.find('span', itemprop='price').text
+    try:
+        price = soup.find('span', itemprop='price').text
+    except:
+        price = None
     datas2 = soup.find_all('td', class_='val')
     datas1 = soup.find_all('td', class_='ha')
     datas = zip(datas1, datas2)
     for data1, data2 in datas:
-        data3 = data1.text
+        data3 = data1.text.replace(" ", "")
         data4 = data3.replace('\xa0', '').strip()
         dataspec = data2.text
         if dataspec == '\xa0':
-            dataspec = 'NULL'
+            dataspec = ''
         datadict.update({data4: dataspec.strip()})
-    prices = price.split()
-    realprice = prices[0]
+    if not price == None:
+        prices = price.split()
+        realprice = prices[0]
+    else:
+        realprice = price
     detail = {"title_mega": title, "price_mega": realprice,
-              "image_mega": image, "datadictmega": datadict.items()}
+              "image_mega": image, "datadictmega": datadict.items(), "datadict": datadict}
 
     # For saving Data in Database(Specification) table
 
@@ -345,27 +424,28 @@ def scraplaptopdetailmega(device_name):
             laptop=Laptop.objects.get(title=title),
             tag=device_name,
             title=title,
-            generation=datadict['Processor Type'],
-            processor=datadict['Processor Type'],
-            processor_speed=datadict['Processor Speed'],
-            installed_ram=datadict['Installed RAM'],
-            type_ofmemory=datadict['Type of memory'],
-            hard_drivesize=datadict['Hard drive size'],
-            hard_drivespeed=datadict['Hard drive speed'],
-            optical_drive=datadict['Optical Drive'],
+            generation=datadict['ProcessorType'],
+            processor=datadict['ProcessorType'],
+            processor_speed=datadict['ProcessorSpeed'],
+            installed_ram=datadict['InstalledRAM'],
+            type_ofmemory=datadict['Typeofmemory'],
+            hard_drivesize=datadict['Harddrivesize'],
+
+            hard_drivespeed=datadict['Harddrivespeed'],
+            optical_drive=datadict['OpticalDrive'],
             ssd=datadict['SSD'],
-            type_ofharddrive=datadict['Type of harddrive'],
-            dedicated_graphics=datadict['Dedicated graphics'],
-            graphics_processor=datadict['Graphics processor'],
+            type_ofharddrive=datadict['Typeofharddrive'],
+            dedicated_graphics=datadict['Dedicatedgraphics'],
+            graphics_processor=datadict['Graphicsprocessor'],
             backlight=datadict['Backlight'],
-            screen_size=datadict['Screen size'],
-            screen_surface=datadict['Screen surface'],
-            screen_resolution=datadict['Screen resolution'],
+            screen_size=datadict['Screensize'],
+            screen_surface=datadict['Screensurface'],
+            screen_resolution=datadict['Screenresolution'],
             touchscreen=datadict['Touchscreen'],
             color=datadict['Colors'],
-            fingerprint_reader=datadict['Fingerprint Reader'],
-            numeric_keyboard=datadict['Numeric keyboard'],
-            backlit_keyboard=datadict['Backlit keyboard'],
+            fingerprint_reader=datadict['FingerprintReader'],
+            numeric_keyboard=datadict['Numerickeyboard'],
+            backlit_keyboard=datadict['Backlitkeyboard'],
             bluetooth=datadict['Bluetooth'],
             lan=datadict['LAN'],
             wireless_wifi=datadict['Wireless/Wifi'],
@@ -373,12 +453,16 @@ def scraplaptopdetailmega(device_name):
             condition='New', usb=datadict['USB'],
             hdmi=datadict['HDMI'],
             camera=datadict['Camera'],
-            operating_system=datadict['Operating system (Primary)'],
+            operating_system=datadict['Operatingsystem(Primary)'],
             manual=datadict['Manual'],
-            product_page=datadict['Product page'],
+            product_page=datadict['Productpage'],
             warranty='1 Year Local Warranty')
         reg.save()
     # if titlep: ****************** update ************************************
     #    if not tagp:
 
     return detail
+
+
+# popularMobile()
+# popularLaptop()

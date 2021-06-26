@@ -1,0 +1,202 @@
+{% extends "Trendz/main.html" %} {% block style %}
+<style></style>
+{% endblock style %} {% block title %} Trendzone {% endblock %} {% block body %}
+<div class="container">
+  <h3 class="my-3">Mobile Report</h3>
+  <div class="row my-4">
+    <dov class="col-md-4">
+      <h3 class="mb-3">Samsung</h3>
+      <canvas width="300" height="300" id="samsung"></canvas>
+    </dov>
+    <div class="col-md-4">
+      <h3 class="mb-3">Apple</h3>
+      <canvas width="300" height="300" id="Apple"></canvas>
+    </div>
+    <div class="col-md-4">
+      <h3 class="mb-3">Xiaomi</h3>
+      <canvas width="300" height="300" id="Xiaomi"></canvas>
+    </div>
+  </div>
+  <div class="row my-4">
+    <dov class="col-md-4">
+      <h3 class="mb-3">Oppo</h3>
+      <canvas width="300" height="300" id="oppo"></canvas>
+    </dov>
+    <div class="col-md-4">
+      <h3 class="mb-3">Vivo</h3>
+      <canvas width="300" height="300" id="vivo"></canvas>
+    </div>
+    <div class="col-md-4">
+      <h3 class="mb-3">Google</h3>
+      <canvas width="300" height="300" id="google"></canvas>
+    </div>
+  </div>
+  <div class="row my-4">
+    <dov class="col-md-4">
+      <h3 class="mb-3">Huawei</h3>
+      <canvas width="300" height="300" id="huawei"></canvas>
+    </dov>
+    <div class="col-md-4">
+      <h3 class="mb-3">Oneplus</h3>
+      <canvas width="300" height="300" id="oneplus"></canvas>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block script %}
+<script>
+  var configSamsung = {
+    type: "pie",
+    data: {
+      datasets: [
+        {
+          data: ["{{samsung.positive}}", "{{samsung.negative}}", "{{samsung.neutral}}"],
+          backgroundColor: ["rgb(255, 99, 132)", "rgb(54, 162, 235)", "rgb(255, 205, 86)"],
+          label: "Population",
+        },
+      ],
+      labels: ["Positive", "Negative", "Neutral"],
+    },
+    options: {
+      responsive: false,
+    },
+  };
+
+  var configApple = {
+    type: "pie",
+    data: {
+      datasets: [
+        {
+          data: ["{{apple.positive}}", "{{apple.negative}}", "{{apple.neutral}}"],
+          backgroundColor: ["rgb(255, 99, 132)", "rgb(54, 162, 235)", "rgb(255, 205, 86)"],
+          label: "Population",
+        },
+      ],
+      labels: ["Positive", "Negative", "Neutral"],
+    },
+    options: {
+      responsive: false,
+    },
+  };
+
+  var configXiaomi = {
+    type: "pie",
+    data: {
+      datasets: [
+        {
+          data: ["{{xiaomi.positive}}", "{{xiaomi.negative}}", "{{xiaomi.neutral}}"],
+          backgroundColor: ["rgb(255, 99, 132)", "rgb(54, 162, 235)", "rgb(255, 205, 86)"],
+          label: "Population",
+        },
+      ],
+      labels: ["Positive", "Negative", "Neutral"],
+    },
+    options: {
+      responsive: false,
+    },
+  };
+
+  var configOppo = {
+    type: "pie",
+    data: {
+      datasets: [
+        {
+          data: ["{{oppo.positive}}", "{{oppo.negative}}", "{{oppo.neutral}}"],
+          backgroundColor: ["rgb(255, 99, 132)", "rgb(54, 162, 235)", "rgb(255, 205, 86)"],
+          label: "Population",
+        },
+      ],
+      labels: ["Positive", "Negative", "Neutral"],
+    },
+    options: {
+      responsive: false,
+    },
+  };
+
+  var configVivo = {
+    type: "pie",
+    data: {
+      datasets: [
+        {
+          data: ["{{vivo.positive}}", "{{vivo.negative}}", "{{vivo.neutral}}"],
+          backgroundColor: ["rgb(255, 99, 132)", "rgb(54, 162, 235)", "rgb(255, 205, 86)"],
+          label: "Population",
+        },
+      ],
+      labels: ["Positive", "Negative", "Neutral"],
+    },
+    options: {
+      responsive: false,
+    },
+  };
+
+  var configGoogle = {
+    type: "pie",
+    data: {
+      datasets: [
+        {
+          data: ["{{googlepixel.positive}}", "{{googlepixel.negative}}", "{{googlepixel.neutral}}"],
+          backgroundColor: ["rgb(255, 99, 132)", "rgb(54, 162, 235)", "rgb(255, 205, 86)"],
+          label: "Population",
+        },
+      ],
+      labels: ["Positive", "Negative", "Neutral"],
+    },
+    options: {
+      responsive: false,
+    },
+  };
+
+  var configHuawei = {
+    type: "pie",
+    data: {
+      datasets: [
+        {
+          data: ["{{huawei.positive}}", "{{huawei.negative}}", "{{huawei.neutral}}"],
+          backgroundColor: ["rgb(255, 99, 132)", "rgb(54, 162, 235)", "rgb(255, 205, 86)"],
+          label: "Population",
+        },
+      ],
+      labels: ["Positive", "Negative", "Neutral"],
+    },
+    options: {
+      responsive: false,
+    },
+  };
+
+  var configOneplus = {
+    type: "pie",
+    data: {
+      datasets: [
+        {
+          data: ["{{oneplus.positive}}", "{{oneplus.negative}}", "{{oneplus.neutral}}"],
+          backgroundColor: ["rgb(255, 99, 132)", "rgb(54, 162, 235)", "rgb(255, 205, 86)"],
+          label: "Population",
+        },
+      ],
+      labels: ["Positive", "Negative", "Neutral"],
+    },
+    options: {
+      responsive: false,
+    },
+  };
+
+  window.onload = function () {
+    var samsung1 = document.getElementById("samsung").getContext("2d");
+    window.Sam = new Chart(samsung1, configSamsung);
+    var apple1 = document.getElementById("Apple").getContext("2d");
+    window.app = new Chart(apple1, configApple);
+    var xiaomi1 = document.getElementById("Xiaomi").getContext("2d");
+    window.xia = new Chart(xiaomi1, configXiaomi);
+    var Oppo1 = document.getElementById("oppo").getContext("2d");
+    window.opp = new Chart(Oppo1, configOppo);
+    var vivo1 = document.getElementById("vivo").getContext("2d");
+    window.viv = new Chart(vivo1, configVivo);
+    var google1 = document.getElementById("google").getContext("2d");
+    window.gog = new Chart(google1, configGoogle);
+    var huawei1 = document.getElementById("huawei").getContext("2d");
+    window.hua = new Chart(huawei1, configHuawei);
+    var oneplus1 = document.getElementById("oneplus").getContext("2d");
+    window.one = new Chart(oneplus1, configOneplus);
+  };
+</script>
+{% endblock script %}
