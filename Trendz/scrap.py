@@ -53,12 +53,16 @@ def scrapmobile():
 
 def scraplaptop():
 
-    laptoplist = ['apple', 'hp', 'dell',
-                  'microsoft', 'asus', 'lenovo', 'acer', 'msi']
+    #laptoplistmega = ['apple', 'hp', 'dell', 'microsoft', 'asus', 'lenovo', 'acer', 'msi']
 
-    for laptop in laptoplist:
-        scraplaptopmega(laptop)
+    laptoplistpak = ['hp-laptops', 'dell', 'microsoft',
+                     'asus-laptops', 'lenovo-laptops', 'acer', 'msi-gaming-laptops']
 
+    # for laptop in laptoplistmega:
+    #    scraplaptopmega(laptop)
+
+    for laptop in laptoplistpak:
+        scraplaptopPaklap(laptop)
     pass
 
 
@@ -325,10 +329,8 @@ def scraplaptopshophive(brand_name):
 
 
 def scraplaptopmega(brand_name):
-    img_list = []
-    title_list = []
-    price_list = []
-    tag2_list = []
+    print(brand_name)
+    print("..........................................................................................................................................")
     test = parse_url(f"https://www.mega.pk/laptop-{brand_name}/")
     soup = test[1]
     laptops = soup.find_all('div', class_='lap_thu_box bg-color-white')
@@ -340,41 +342,26 @@ def scraplaptopmega(brand_name):
         links = link.split('/', 4)
         tags2 = links[-1].split('.')
         tag2 = tags2[0]
-        tag2_list.append(tag2.replace('/', '-'))
-        price_list.append(price.strip())
-        img_list.append(image)
-        title_list.append(title)
-    context = zip(img_list, title_list, price_list, tag2_list)
+        finaltag = tag2.replace('/', '-')
+        finalprice = price.strip()
 
-    # For saving Data in Database(Laptop) table
-    Query = Laptop.objects.all()
-    for img, title, price, tag in context:
-        title_cn = False
-        img_cn = False
-        price_cn = False
-        tag_cn = False
-        for obj in Query:
-            if obj.title == title:
-                title_cn = True
-                if obj.image == img:
-                    img_cn = True
-                if obj.price == price:
-                    price_cn = True
-                if obj.tag1 == tag:
-                    tag_cn = True
-        if not title_cn:
-            reg = Laptop(title=title, price=price, image=img,
-                         tag1=tag, site='Mega', brand=brand_name)
+        if Laptop.objects.filter(title=title):
+            if not Laptop.objects.filter(image=image):
+                print('Image Update', title)
+                Laptop.objects.filter(title=title).update(image=image)
+            if not Laptop.objects.filter(price=finalprice):
+                Laptop.objects.filter(title=title).update(price=finalprice)
+                print('price Update', title)
+            if not Laptop.objects.filter(tag1=finaltag):
+                Laptop.objects.filter(title=title).update(tag1=finaltag)
+                print('tag Update', title)
+        else:
+            reg = Laptop(title=title, price=finalprice, image=image,
+                         tag1=finaltag, site='Mega', brand=brand_name)
             reg.save()
-        elif title_cn:
-            if not img_cn:
-                Laptop.objects.filter(title=title).update(image=img)
-            if not price_cn:
-                Laptop.objects.filter(title=title).update(price=price)
-            if not tag_cn:
-                Laptop.objects.filter(title=title).update(tag1=tag)
+            print('New object added to Database', title)
 
-    return None
+    pass
 
 
 def scraplaptopdetailmega(device_name):
@@ -462,6 +449,52 @@ def scraplaptopdetailmega(device_name):
     #    if not tagp:
 
     return detail
+
+
+def scraplaptopPaklap(brand_name):
+    print(brand_name)
+    print("..........................................................................................................................................")
+    test = parse_url(f"https://www.paklap.pk/laptops-prices/{brand_name}.html")
+    soup = test[1]
+    productInfo = soup.find_all('div', class_='product-item-info')
+    productInfo.pop(-1)
+    for product in productInfo:
+        image = product.find('span', class_='product-image-wrapper').img['src']
+        title = product.find(
+            'strong', class_='product name product-item-name').a.text
+        href = product.find(
+            'strong', class_='product name product-item-name').a['href']
+        links = href.replace('https://www.paklap.pk/', '')
+        tag = links.replace('.html', '')
+        price = product.find('span', class_='price').text
+
+        if brand_name == "asus-laptops":
+            brand_name = "asus"
+        elif brand_name == "hp-laptops":
+            brand_name = "hp"
+        elif brand_name == "lenovo-laptops":
+            brand_name = "lenovo"
+        elif brand_name == "msi-gaming-laptops":
+            brand_name = "msi"
+        elif brand_name == "apple-macbooks":
+            brand_name = "apple"
+
+        if Laptop.objects.filter(title=title):
+            if not Laptop.objects.filter(image=image):
+                print('Image Update', title)
+                Laptop.objects.filter(title=title).update(image=image)
+            if not Laptop.objects.filter(price=price):
+                Laptop.objects.filter(title=title).update(price=price)
+                print('price Update', title)
+            if not Laptop.objects.filter(tag1=tag):
+                Laptop.objects.filter(title=title).update(tag1=tag)
+                print('tag Update', title)
+        else:
+            reg = Laptop(title=title, price=price, image=image,
+                         tag1=tag, site='Paklap', brand=brand_name)
+            reg.save()
+            print('New object added to Database', title)
+    pass
 
 
 # popularMobile()

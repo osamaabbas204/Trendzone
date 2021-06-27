@@ -24,6 +24,10 @@
     display: flex;
     justify-content: center;
   }
+  .logo {
+    display: flex;
+    justify-content: flex-end;
+  }
   .status {
     font-size: 11px;
     color: #a80500;
@@ -81,10 +85,15 @@
 <div class="container">
   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
     {% for obj in page_obj1 %}
-    <a class="product-item" href="{% url 'laptopdetail' obj.tag1 %}">
-      <div class="image"><img height="199px" width="149px" src="{{obj.image}}" alt="Nothing Show" /></div>
+    <a class="product-item" style="width: 210px" href="{% url 'laptopdetail' obj.tag1 %}">
+      <div class="image"><img height="199px" width="190px" src="{{obj.image}}" alt="Nothing Show" /></div>
       <div class="price"><span>{{ obj.price }}</span></div>
       <div class="brand-name">{{obj.title}}</div>
+      {% if obj.site == "Mega" %}
+      <div class="logo"><img height="30px" width="60px" src="{% static '/images/Megalogo.PNG' %}" alt="brand image" /></div>
+      {% else %}
+      <div class="logo"><img height="30px" width="60px" src="{% static '/images/Paklap.PNG' %}" alt="brand image" /></div>
+      {% endif %}
     </a>
 
     {% endfor %}

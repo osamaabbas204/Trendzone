@@ -108,6 +108,18 @@ class Mobilecomment(models.Model):
         return self.comment[0:15] + "..." + " by " + self.user.username
 
 
+class Laptopcomment(models.Model):
+    srno = models.AutoField(primary_key=True)
+    comment = models.TextField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    laptop = models.ForeignKey(Laptop, on_delete=models.CASCADE)
+    parent = models.ForeignKey("self", on_delete=models.CASCADE, null=True)
+    timestamp = models.DateTimeField(default=now)
+
+    def __str__(self):
+        return self.comment[0:15] + "..." + " by " + self.user.username
+
+
 class Wishlist(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     mobile = models.ForeignKey(Mobile, on_delete=models.CASCADE, null=True)

@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .forms import ContactForm, CreateUserForm
-from .models import Contact, Laptop, Mobile, Mobilecomment, Specification, Wishlist, MObiletrend, Laptoptrend
+from .models import Contact, Laptop, Mobile, Mobilecomment, Specification, Wishlist, MObiletrend, Laptoptrend, Laptopcomment
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
@@ -292,11 +292,17 @@ def laptoplistpage(request, brand_name):
 
 def laptopdetailpage(request, device_name):
 
-    context = scraplaptopdetailmega(device_name)
     laptop = Laptop.objects.get(tag1=device_name)
+    if laptop.site == "Mega":
+        context = scraplaptopdetailmega(device_name)
+    else:
+        None
     print(laptop.id)
     wishlist = Wishlist.objects.filter(laptop=laptop)
-    context.update({"wishlist": wishlist, "laptop": laptop})
+    comments = Laptopcomment.objects.filter(laptop=laptop, parent=None)
+    replies = Laptopcomment.objects.filter(laptop=laptop).exclude(parent=None)
+    context.update({"wishlist": wishlist, "laptop": laptop,
+                    "comments": comments, "replies": replies})
 
     return render(request, 'Trendz/laptopdetail.html', context)
 
@@ -317,31 +323,60 @@ def searchview(request):
 
 def postcomment(request):
     if request.method == "POST":
-        comment = request.POST.get("comment")
-        user = request.user
-        mobileid = request.POST.get("mobileid")
-        mobile = Mobile.objects.get(id=mobileid)
-        parentSrno = request.POST.get('parentSrno')
+        if request.POST.get("mobileid"):
+            comment = request.POST.get("comment")
+            user = request.user
+            mobileid = request.POST.get("mobileid")
+            mobile = Mobile.objects.get(id=mobileid)
+            parentSrno = request.POST.get('parentSrno')
 
-        if re.search('[a-zA-Z]', comment):
-            if parentSrno == "":
-                comment = Mobilecomment(
-                    comment=comment, user=user, mobile=mobile)
-                comment.save()
-                messages.success(
-                    request, "Your Review has been posted successfully")
+            if re.search('[a-zA-Z]', comment):
+                if parentSrno == "":
+                    comment = Mobilecomment(
+                        comment=comment, user=user, mobile=mobile)
+                    comment.save()
+                    messages.success(
+                        request, "Your Review has been posted successfully")
 
+                else:
+                    parent = Mobilecomment.objects.get(srno=parentSrno)
+                    comment = Mobilecomment(
+                        comment=comment, user=user, mobile=mobile, parent=parent)
+                    comment.save()
+                    messages.success(
+                        request, f"Your replied to {parent.user.username}")
             else:
-                parent = Mobilecomment.objects.get(srno=parentSrno)
-                comment = Mobilecomment(
-                    comment=comment, user=user, mobile=mobile, parent=parent)
-                comment.save()
                 messages.success(
-                    request, f"Your replied to {parent.user.username}")
-        else:
-            messages.success(
-                request, "Please Write Comment Correctly")
-    return redirect('phonedetail', device_name=mobile.tag)
+                    request, "Please Write Comment Correctly")
+            return redirect('phonedetail', device_name=mobile.tag)
+    if request.method == "POST":
+        if request.POST.get("laptopid"):
+            comment = request.POST.get("comment")
+            user = request.user
+            laptopid = request.POST.get("laptopid")
+            laptop = Laptop.objects.get(id=laptopid)
+            parentSrno = request.POST.get('parentSrno')
+
+            if re.search('[a-zA-Z]', comment):
+                if parentSrno == "":
+                    comment = Laptopcomment(
+                        comment=comment, user=user, laptop=laptop)
+                    comment.save()
+                    messages.success(
+                        request, "Your Review has been posted successfully")
+
+                else:
+                    parent = Laptopcomment.objects.get(srno=parentSrno)
+                    comment = Laptopcomment(
+                        comment=comment, user=user, laptop=laptop, parent=parent)
+                    comment.save()
+                    messages.success(
+                        request, f"Your replied to {parent.user.username}")
+            else:
+                messages.success(
+                    request, "Please Write Comment Correctly")
+            return redirect('laptopdetail', device_name=laptop.tag1)
+    return redirect('home')
 
 
 def wishlistdata(request):

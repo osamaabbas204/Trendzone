@@ -1,5 +1,24 @@
-{% extends "Trendz/main.html" %} {% load static %} {% block style %}
+{% extends "Trendz/main.html" %} {% load static %} {% load humanize %} {% block style %}
 <link rel="stylesheet" href="{% static '/css/phonedetail.css' %}" />
+<style>
+  .comment-title {
+    font-size: 20px;
+    color: #0984e3;
+    font-weight: 600;
+    margin: 0;
+  }
+  .review-name {
+    color: rgba(48, 63, 74, 0.75);
+    font-size: 15px;
+    line-height: 18px;
+  }
+  .review-title {
+    color: #0984e3;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 25px;
+  }
+</style>
 {% endblock style %} {% block title %} Trendzone {% endblock %} {% block body %}
 
 <div class="container my-5">
@@ -141,6 +160,105 @@
           </table>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-8">
+      <h3 class="comment-title mb-2">Add a review</h3>
+      <form action="{% url 'comment' %}" method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <textarea class="form-control" rows="3" name="comment"> </textarea>
+        </div>
+        <input type="hidden" name="laptopid" value="{{laptop.id}}" />
+        <input type="hidden" name="parentSrno" value="" />
+        {% if request.user.is_authenticated %}
+        <button type="submit" value="submit" class="btn btn-primary">Post Review</button>
+        {% else %}
+        <a href="{% url 'signup' %}">
+          <button type="button" class="btn btn-primary mx-2">For Add Review SignUp/Login</button>
+        </a>
+        {% endif %}
+        <div class="row mb-3 justify-content-center">
+          <div class="col">
+            {% for message in messages %}
+            <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </form>
+      <h3 class="review-title">User Reviews</h3>
+      {% for comment in comments %}
+      <div class="row mb-3">
+        <div class="col-1 me-3">
+          <img width="40px" height="40px" style="border-radius: 50%" src="https://secure.gravatar.com/avatar/?s=40&d=mm&r=g" alt="Dummy PersonImage" />
+        </div>
+        <div class="col-10">
+          <div class="row">
+            <div class="col" style="font-size: 12px; font-weight: 100">
+              <span class="review-name">{{comment.user.username}}</span>
+              <span class="badge bg-secondary">{{comment.timestamp | naturaltime}}</span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col" style="font-size: 14px">{{comment.comment}}</div>
+          </div>
+          <div class="row">
+            <div class="col">
+              {% if user.is_authenticated %}
+              <p>
+                <a style="text-decoration: none" data-bs-toggle="collapse" href="#replyBox{{comment.srno}}" aria-expanded="false" aria-controls="replyBox{{comment.srno}}"> Reply </a>
+              </p>
+              <div class="collapse" id="replyBox{{comment.srno}}">
+                <div class="card card-body">
+                  <form action="{% url 'comment' %}" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                      <label for="comment">Reply to {{comment.user.username}}</label>
+                      <input type="text" class="form-control my-2" name="comment" placeholder="Enter comment here" />
+                      <input type="hidden" name="parentSrno" value="{{comment.srno}}" />
+                    </div>
+                    <input type="hidden" name="laptopid" value="{{laptop.id}}" />
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                  </form>
+                </div>
+              </div>
+              {% else %}
+              <a style="text-decoration: none" href="{% url 'login' %}"> Login to Reply</a>
+              {% endif %}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              {% for reply in replies %} {% if comment.srno == reply.parent.srno %}
+              <div class="row mb-2">
+                <div class="col-1 me-3">
+                  <img width="40px" height="40px" style="border-radius: 50%" src="https://secure.gravatar.com/avatar/?s=40&d=mm&r=g" alt="Dummy PersonImage" />
+                </div>
+                <div class="col-10">
+                  <div class="row">
+                    <div class="col" style="font-size: 12px; font-weight: 100">
+                      <span class="review-name">{{reply.user.username}}</span>
+                      <span class="badge bg-secondary">{{reply.timestamp | naturaltime}}</span>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col" style="font-size: 14px">{{reply.comment}}</div>
+                  </div>
+                </div>
+              </div>
+              {% endif %} {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
     </div>
   </div>
 </div>
