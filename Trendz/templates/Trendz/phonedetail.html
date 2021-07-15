@@ -20,10 +20,13 @@
     font-size: 18px;
     font-weight: 700;
     line-height: 25px;
+    color: rgb(0, 102, 255);
+    color: rgb(117, 165, 255);
+    color: #a3d3ff;
   }
 </style>
 <link rel="stylesheet" href="{% static '/css/phonedetail.css' %}" />
-{% endblock %} {% block title %} Trendzone {% endblock %} {% block body %}
+{% endblock %} {% block title %}{{title}}{% endblock %} {% block body %}
 
 <div class="container mt-5">
   <div class="row">
@@ -61,7 +64,7 @@
             <span class="price"> {% if price %} {{price}} {% elif price_mega %} {{price_mega}} {%endif %} </span>
             <small>RS</small>
           </div>
-          {{rating}} {% if rating >= 10 %}
+          {% if rating >= 10 %}
           <div class="rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></div>
           {% elif rating >= 8 %}
           <div class="rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i></div>
@@ -467,7 +470,28 @@
         </div>
       </div>
     </div>
-    <div class="col-4">
+    <div class="col-md-4">
+      <div class="row mb-5">
+        <div class="col-12">
+          <h3 class="phone-title-spec">Price List</h3>
+          <table class="table">
+            <thead class="thead-light">
+              <tr>
+                <th style="width: 80px" scope="col">Brand</th>
+                <th scope="col">Price</th>
+                <th scope="col">Link</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><img height="30px" width="70px" src="{% static '/images/priceoye.PNG' %}" alt="" /></td>
+                <td>{{price1.price}}</td>
+                <td><a class="btn btn-danger btn-sm" target="_blank" href="{{price1.link}}" role="button">Shop Now</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
       <canvas width="300" height="300" id="mobileChart"></canvas>
     </div>
   </div>
@@ -582,8 +606,8 @@
       datasets: [
         {
           data: ["{{mobileGraph.positive}}", "{{mobileGraph.negative}}", "{{mobileGraph.neutral}}"],
-          backgroundColor: ["#696969", "#808080", "#A9A9A9", "#C0C0C0", "#D3D3D3"],
-          label: "Population",
+          backgroundColor: ["rgb(0, 102, 255)", "rgb(117, 165, 255)", "#a3d3ff"],
+          label: "{{mobile.title}}",
         },
       ],
       labels: ["Positive", "Negative", "Neutral"],
@@ -633,24 +657,24 @@
       },
     });
   }
-  function addWishlist(mobile) {
-    senddata(mobile);
-  }
-  function removeWishlist(mobile) {
-    senddata(mobile);
-  }
+  // function Wishlist(mobile) {
+  //   senddata(mobile);
+  // }
+  // function removeWishlist(mobile) {
+  //   senddata(mobile);
+  // }
   let wishlistButton = document.getElementById("Wishlist-btn");
   wishlistButton.addEventListener("click", function () {
     if (this.classList.contains("active")) {
       let mobile = this.dataset.mobile;
-      removeWishlist(mobile);
+      senddata(mobile);
       this.classList.remove("active");
       this.classList.remove("btn-success");
       this.classList.add("btn-primary");
     } else {
       if (this.classList.contains("btn-primary")) {
         let mobile = this.dataset.mobile;
-        addWishlist(mobile);
+        senddata(mobile);
         this.classList.add("active");
         this.classList.remove("btn-primary");
         this.classList.add("btn-success");

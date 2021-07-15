@@ -26,7 +26,7 @@
   }
   .logo {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
   }
   .status {
     font-size: 11px;
@@ -61,20 +61,17 @@
     margin-bottom: 23px;
   }
 </style>
-{% endblock style %} {% block title %} Trendzone {% endblock %} {% block body %}
+{% endblock style %} {% block title %}{{Brand.brand}}{{brandLap.brand}}{% endblock %} {% block body %}
 
 <div class="container my-5">
   {% if page_obj %}
-  <h3 class="page-title"><span style="text-transform: uppercase">{{Brand.brand}}</span></h3>
+  <h3 class="page-title"><span style="text-transform: uppercase">{% if Brand.brand == "samsung_mobiles_prices" %}Samsung{% else %}{{Brand.brand}}{% endif %}</span></h3>
   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
     {% for obj in page_obj %}
     <a class="product-item" href="{% url 'phonedetail' obj.tag %}">
       <div class="image"><img height="199px" width="149px" src="{{obj.image}}" alt="Nothing Show" /></div>
-      {% if obj.status == "None" %} {%else%}
-      <div class="status">{{obj.status}}</div>
-      {% endif %}
-      <div class="brand-name">{{obj.title}}</div>
       <div class="price"><span>{{ obj.price }}</span>RS</div>
+      <div class="brand-name">{{obj.title}}</div>
     </a>
 
     {% endfor %}
@@ -83,17 +80,21 @@
 </div>
 
 <div class="container">
+  <h3 class="page-title ms-4"><span style="text-transform: uppercase">{{brandLap.brand}}</span></h3>
   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
     {% for obj in page_obj1 %}
     <a class="product-item" style="width: 210px" href="{% url 'laptopdetail' obj.tag1 %}">
       <div class="image"><img height="199px" width="190px" src="{{obj.image}}" alt="Nothing Show" /></div>
       <div class="price"><span>{{ obj.price }}</span></div>
       <div class="brand-name">{{obj.title}}</div>
-      {% if obj.site == "Mega" %}
-      <div class="logo"><img height="30px" width="60px" src="{% static '/images/Megalogo.PNG' %}" alt="brand image" /></div>
-      {% else %}
-      <div class="logo"><img height="30px" width="60px" src="{% static '/images/Paklap.PNG' %}" alt="brand image" /></div>
-      {% endif %}
+      <div class="logo">
+        <button type="button" class="btn btn-danger btn-sm">Buy</button>
+        {% if obj.site == "Mega" %}
+        <img height="30px" width="60px" src="{% static '/images/Megalogo.PNG' %}" alt="brand image" />
+        {% else %}
+        <img height="30px" width="60px" src="{% static '/images/Paklap.PNG' %}" alt="brand image" />
+        {% endif %}
+      </div>
     </a>
 
     {% endfor %}

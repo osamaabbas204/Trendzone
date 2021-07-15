@@ -2,6 +2,9 @@ import random
 import requests
 from bs4 import BeautifulSoup
 from .models import Laptop, Specification, Mobile, Mobilespec
+# import json
+# import pandas as pd
+# import re
 
 
 def GET_UA():
@@ -53,13 +56,14 @@ def scrapmobile():
 
 def scraplaptop():
 
-    #laptoplistmega = ['apple', 'hp', 'dell', 'microsoft', 'asus', 'lenovo', 'acer', 'msi']
+    laptoplistmega = ['apple', 'hp', 'dell',
+                      'microsoft', 'asus', 'lenovo', 'acer', 'msi']
 
     laptoplistpak = ['hp-laptops', 'dell', 'microsoft',
                      'asus-laptops', 'lenovo-laptops', 'acer', 'msi-gaming-laptops']
 
-    # for laptop in laptoplistmega:
-    #    scraplaptopmega(laptop)
+    for laptop in laptoplistmega:
+        scraplaptopmega(laptop)
 
     for laptop in laptoplistpak:
         scraplaptopPaklap(laptop)
@@ -83,9 +87,49 @@ def popularMobile():
     pass
 
 
+def latestMobile():
+    test = parse_url("https://priceoye.pk/store")
+    soup = test[1]
+    latestMobiles = soup.find_all('h4', class_='p3')
+    latestlist = []
+    for mobile in latestMobiles:
+        mobile1 = mobile.text.replace("\n", "")
+        latestlist.append(mobile1.strip())
+    print(latestlist)
+
+    for latest in latestlist:
+        if Mobile.objects.filter(title=latest):
+            Mobile.objects.filter(title=latest).update(status="latest")
+            print("Latest mobile updated ", latest)
+
+    pass
+
+
 def popularLaptop():
     popularlist = []
-    popularmac = []
+    # popular macbook from paklap.pk
+    test2 = parse_url(
+        "https://www.paklap.pk/apple-products/apple-macbooks.html")
+    soup = test2[1]
+    container = soup.find('ol', class_='products list items product-items')
+    productInfo = container.find_all('div', class_='product-item-info')
+    productInfo.pop(-1)
+    for product in productInfo:
+        title = product.find(
+            'strong', class_='product name product-item-name').a.text
+        popularlist.append(title.strip())
+    # popular laptop from paklap.pk
+    test3 = parse_url(
+        "https://www.paklap.pk/laptops-prices.html")
+    soup = test3[1]
+    container = soup.find('ol', class_='products list items product-items')
+    productInfo = container.find_all('div', class_='product-item-info')
+    productInfo.pop(-1)
+    for product in productInfo:
+        title = product.find(
+            'strong', class_='product name product-item-name').a.text
+        popularlist.append(title.strip())
+
     test = parse_url(
         f"https://www.mega.pk/")
     test1 = parse_url(
@@ -99,14 +143,13 @@ def popularLaptop():
     for name in Names:
         popularlist.append(name.text.replace("\n", ""))
     for laptop in names1:
-        popularmac.append(laptop.text.replace("\n", ""))
-    print(popularmac)
-    # for popular in popularlist:
-    #     if Laptop.objects.filter(title=popular):
-    #         Laptop.objects.filter(title=popular).update(status="popular")
-    for popular in popularmac:
+        popularlist.append(laptop.text.replace("\n", ""))
+    print(popularlist)
+    for popular in popularlist:
         if Laptop.objects.filter(title=popular):
             Laptop.objects.filter(title=popular).update(status="popular")
+        else:
+            print("----------------------- This ", popular, " Not Available")
 
     pass
 
@@ -215,6 +258,7 @@ def scrapmobiledetail(device_name):
                "battery", "ram", "display", "color"]
     Dict_spec = {key: None for key in keyList}
     title = soup.find("h1", class_="title").strong.text
+    # darazdata = darazmobileprice(title)
     price = soup.find("div", class_="price").span.text
     image = soup.find("div", class_="slickSlider").img['data-lazy-src']
     specs = soup.find_all("div", class_="row spec-wr mx-0")
@@ -298,6 +342,37 @@ def scrapmobiledetail(device_name):
     return detail
 
 
+# def darazmobileprice(title):
+#     title1 = title.replace(" ", "+")
+#     print(title1)
+#     html_data = parse_url(
+#         f"https://www.daraz.pk/catalog/?q={title1}&_keyori=ss&from=input&spm=a2a0e.home.search.go.166c4937sDoNHy")
+#     soup = html_data[1]
+#     for script in soup.select('script'):
+#         print(script.text)
+#         print("===================================================================================================================")
+#         if 'window.pageData=' in script:
+#             script = script.text.replace('window.pageData=', '')
+#             print(script)
+#             break
+#     items = json.loads(script)
+#     print(items)
+#     # results = []
+
+#     # for item in items:
+#     #     # print(item)
+#     #     # extract other info you want
+#     #     row = [item['name'], item['priceShow'],
+#     #            item['productUrl'], item['ratingScore']]
+#     #     results.append(row)
+
+#     # df = pd.DataFrame(results, columns=[
+#     #                   'Name', 'Price', 'ProductUrl', 'Rating'])
+
+#     # print(df.head())
+#     pass
+
+
 def scraplaptopshophive(brand_name):
     title_list = []
     img_list = []
@@ -346,15 +421,19 @@ def scraplaptopmega(brand_name):
         finalprice = price.strip()
 
         if Laptop.objects.filter(title=title):
-            if not Laptop.objects.filter(image=image):
-                print('Image Update', title)
+            laptop = Laptop.objects.get(tag1=finaltag)
+            if not laptop.image == image:
+                print('Image Update for ', title)
                 Laptop.objects.filter(title=title).update(image=image)
-            if not Laptop.objects.filter(price=finalprice):
+            if not laptop.price == finalprice:
                 Laptop.objects.filter(title=title).update(price=finalprice)
-                print('price Update', title)
-            if not Laptop.objects.filter(tag1=finaltag):
+                print('price Update for ', title)
+            if not laptop.tag1 == finaltag:
                 Laptop.objects.filter(title=title).update(tag1=finaltag)
-                print('tag Update', title)
+                print('tag Update for ', title)
+            if not laptop.link == link:
+                Laptop.objects.filter(title=title).update(link=link)
+                print('link Update for ', link)
         else:
             reg = Laptop(title=title, price=finalprice, image=image,
                          tag1=finaltag, site='Mega', brand=brand_name)
@@ -371,10 +450,6 @@ def scraplaptopdetailmega(device_name):
     soup = test[1]
     image = soup.find('div', itemprop='image').img['data-original']
     title = soup.find('h1', class_='product-title').span.text
-    try:
-        price = soup.find('span', itemprop='price').text
-    except:
-        price = None
     datas2 = soup.find_all('td', class_='val')
     datas1 = soup.find_all('td', class_='ha')
     datas = zip(datas1, datas2)
@@ -385,28 +460,12 @@ def scraplaptopdetailmega(device_name):
         if dataspec == '\xa0':
             dataspec = ''
         datadict.update({data4: dataspec.strip()})
-    if not price == None:
-        prices = price.split()
-        realprice = prices[0]
-    else:
-        realprice = price
-    detail = {"title_mega": title, "price_mega": realprice,
-              "image_mega": image, "datadictmega": datadict.items(), "datadict": datadict}
+    detail = {"datadictmega": datadict.items(), "datadict": datadict,
+              "imageMega": image}
 
     # For saving Data in Database(Specification) table
 
-    Query = Specification.objects.all()
-
-    tagp = False
-    titlep = False
-    for obj in Query:
-        tagp = False
-        titlep = False
-        if title == obj.title:
-            titlep = True
-            if device_name == obj.tag:
-                tagp = True
-    if not titlep:
+    if not Specification.objects.filter(title=title):
         reg = Specification(
             laptop=Laptop.objects.get(title=title),
             tag=device_name,
@@ -417,7 +476,6 @@ def scraplaptopdetailmega(device_name):
             installed_ram=datadict['InstalledRAM'],
             type_ofmemory=datadict['Typeofmemory'],
             hard_drivesize=datadict['Harddrivesize'],
-
             hard_drivespeed=datadict['Harddrivespeed'],
             optical_drive=datadict['OpticalDrive'],
             ssd=datadict['SSD'],
@@ -454,14 +512,21 @@ def scraplaptopdetailmega(device_name):
 def scraplaptopPaklap(brand_name):
     print(brand_name)
     print("..........................................................................................................................................")
-    test = parse_url(f"https://www.paklap.pk/laptops-prices/{brand_name}.html")
+    if not "apple-macbooks" == brand_name:
+        test = parse_url(
+            f"https://www.paklap.pk/laptops-prices/{brand_name}.html")
+    else:
+        test = parse_url(
+            "https://www.paklap.pk/apple-products/apple-macbooks.html")
     soup = test[1]
-    productInfo = soup.find_all('div', class_='product-item-info')
+    container = soup.find('ol', class_='products list items product-items')
+    productInfo = container.find_all('div', class_='product-item-info')
     productInfo.pop(-1)
     for product in productInfo:
         image = product.find('span', class_='product-image-wrapper').img['src']
         title = product.find(
             'strong', class_='product name product-item-name').a.text
+        title1 = title.strip()
         href = product.find(
             'strong', class_='product name product-item-name').a['href']
         links = href.replace('https://www.paklap.pk/', '')
@@ -479,22 +544,110 @@ def scraplaptopPaklap(brand_name):
         elif brand_name == "apple-macbooks":
             brand_name = "apple"
 
-        if Laptop.objects.filter(title=title):
-            if not Laptop.objects.filter(image=image):
-                print('Image Update', title)
-                Laptop.objects.filter(title=title).update(image=image)
-            if not Laptop.objects.filter(price=price):
-                Laptop.objects.filter(title=title).update(price=price)
-                print('price Update', title)
-            if not Laptop.objects.filter(tag1=tag):
-                Laptop.objects.filter(title=title).update(tag1=tag)
-                print('tag Update', title)
+        if Laptop.objects.filter(title=title1):
+            laptop = Laptop.objects.get(title=title1)
+            if not laptop.image == image:
+                print('Image Update for ', title1)
+                Laptop.objects.filter(title=title1).update(image=image)
+            if not laptop.price == price:
+                Laptop.objects.filter(title=title1).update(price=price)
+                print('price Update for ', title1)
+            if not laptop.tag1 == tag:
+                Laptop.objects.filter(title=title1).update(tag1=tag)
+                print('tag Update for ', title1)
+            if not laptop.link == href:
+                Laptop.objects.filter(title=title1).update(link=href)
+                print('link Update for ', title1)
         else:
-            reg = Laptop(title=title, price=price, image=image,
-                         tag1=tag, site='Paklap', brand=brand_name)
+            reg = Laptop(title=title1, price=price, image=image,
+                         tag1=tag, site='Paklap', brand=brand_name, link=href)
             reg.save()
-            print('New object added to Database', title)
+            print('New object added to Database', title1)
     pass
+
+
+def scrapdetailPaklap(device_name):
+    datadict = {}
+    test = parse_url(f"https://www.paklap.pk/{device_name}.html")
+    soup = test[1]
+    title = soup.find('span', class_='base').text
+    im = soup.find('img', class_='fotorama__img magnify-opaque magnify-opaque')
+    detaillabel = soup.find_all('th', class_='col label')
+    detaildata = soup.find_all('td', class_='col data')
+    detail = zip(detaillabel, detaildata)
+    for label, data in detail:
+        datadict.update({label.text.strip(): data.text.strip()})
+    detail = {"datadictPaklap": datadict.items()}
+    print(im)
+    if not Specification.objects.filter(title=title):
+        reg = Specification(
+            laptop=Laptop.objects.get(tag1=device_name),
+            tag=device_name,
+            title=title,
+            generation=datadict['Generation'],
+            processor=datadict['Processor Type'],
+            processor_speed=datadict['Processor Speed'],
+            installed_ram=datadict['Installed RAM'],
+            type_ofmemory=datadict['Type of memory'],
+            hard_drivesize=datadict['Hard drive size'],
+            hard_drivespeed=datadict['Hard drive speed'],
+            optical_drive=datadict['Optical Drive'],
+            type_ofopticaldrive=datadict['Type of optical drive'],
+            ssd=datadict['SSD'],
+            type_ofharddrive=datadict['Type of harddrive'],
+            dedicated_graphics=datadict['Dedicated graphics'],
+            graphics_memory=datadict['Graphics memory'],
+            type_ofgraphics_memory_shared=datadict['Type of graphics memory'],
+            switchable_graphics=datadict['Switchable graphics'],
+            graphics_processor=datadict['Graphics processor'],
+            backlight=datadict['Backlight'],
+            screen_size=datadict['Screen size'],
+            screen_surface=datadict['Screen surface'],
+            screen_resolution=datadict['Screen resolution'],
+            touchscreen=datadict['Touchscreen'],
+            color=datadict['Color'],
+            fingerprint_reader=datadict['Fingerprint Reader'],
+            numeric_keyboard=datadict['Numeric keyboard'],
+            backlit_keyboard=datadict['Backlit keyboard'],
+            bluetooth=datadict['Bluetooth'],
+            lan=datadict['LAN'],
+            wireless_wifi=datadict['Wireless/Wifi'],
+            wifi_type=datadict['Type'],
+            condition=datadict['Condition'], usb=datadict['USB'],
+            hdmi=datadict['HDMI'],
+            camera=datadict['Camera'],
+            operating_system=datadict['Operating system (Primary)'],
+            manual=datadict['Manual'],
+            product_page=datadict['Product page'],
+            warranty=datadict['Warranty'])
+        print("Laptop Detail is saved in the database...............................................................")
+        reg.save()
+    return detail
+
+
+def priceoye(brand_name):
+    brand1 = brand_name.strip().replace(" ",  "+")
+    test = parse_url(f"https://priceoye.pk/search?q={brand1}")
+    soup = test[1]
+    product = soup.find("div", class_="productBox")
+    link = product.find("a")["href"]
+    title = product.find("h4", class_="p3").text
+    price = product.find("div", class_="price-box").text
+    print(price.strip())
+
+    return {"price": price.strip().replace("\n", ""), "title": title.strip().replace("\n", ""), "link": link}
+
+
+# def pricetelemart():
+#     test = parse_url(
+#         f"https://www.telemart.pk/search?query=samsung%20galaxy%20a52&refinementList%5Bcategories%5D%5B0%5D=Mobiles%20%26%20Tablets")
+#     soup = test[1]
+#     print
+#     allProduct = soup.find_all('div', class_="col-sm-3 box")
+#     print(allProduct)
+#     for product in allProduct:
+#         print(product)
+#     pass
 
 
 # popularMobile()

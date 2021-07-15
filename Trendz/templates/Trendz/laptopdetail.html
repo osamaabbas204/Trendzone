@@ -19,21 +19,23 @@
     line-height: 25px;
   }
 </style>
-{% endblock style %} {% block title %} Trendzone {% endblock %} {% block body %}
+{% endblock style %} {% block title %}{{laptop.title}}{% endblock %} {% block body %}
 
 <div class="container my-5">
   <div class="row">
     <div class="col-md-6 text-center">
       <div class="row justify-content-end">
         <div class="col-3">
-          {% if wishlist %}
+          {% if request.user.is_authenticated %} {% if wishlist.user == request.user %}
           <button id="Wishlist-btn" data-laptop="{{laptop.id}}" type="sumbit" class="btn btn-success btn-sm active">Wishlist</button>
           {% else %}
           <button id="Wishlist-btn" data-laptop="{{laptop.id}}" type="sumbit" class="btn btn-primary btn-sm">Wishlist</button>
+          {% endif %} {% else %}
+          <button onclick="alertWishlist()" type="button" class="btn btn-primary btn-sm">Wishlist</button>
           {% endif %}
         </div>
       </div>
-      <img src="{{image_mega}}" />
+      <img src="{{imageMega}}{{laptop.image}}" />
     </div>
     <div class="col-md-6">
       <div class="row">
@@ -41,8 +43,8 @@
           <!--<div class="like liked" data-id="10620" title="Remove this from wishlist.">
                         <i class="fa fa-star"></i>
                     </div>-->
-          <h3 class="title"><strong>{{title_mega}}</strong></h3>
-          <div><span class="price">{{price_mega}}</span> <small>RS</small></div>
+          <h3 class="title"><strong>{{laptop.title}}</strong></h3>
+          <div><span class="price">{{laptop.price}}</span></div>
           <div class="rating"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i></div>
         </div>
       </div>
@@ -56,7 +58,7 @@
                     ><img width="50" height="50" src="https://propakistani.pk/price/wp-content/themes/pricev3/img/icons/camera-grp.png"
                   /></noscript>
                 </div>
-                <div class="col spec-dt"><span style="color: #303f4a; font-size: 16px">{{datadict.Camera}}</span> Camera</div>
+                <div class="col spec-dt"><span style="color: #303f4a; font-size: 16px">{{laptopSpecs.camera}}</span> Camera</div>
               </div>
             </li>
             <li class="col-6 p-0">
@@ -67,7 +69,7 @@
                   /></noscript>
                 </div>
                 <div class="col spec-dt">
-                  <span style="color: #303f4a; font-size: 16px">{{datadict.ProcessorType}} {{datadict.ProcessorSpeed}}</span>
+                  <span style="color: #303f4a; font-size: 16px">{{laptopSpecs.processor}}{{laptopSpecs.processor_speed}}</span>
                   Processor
                 </div>
               </div>
@@ -80,7 +82,7 @@
                   /></noscript>
                 </div>
                 <div class="col spec-dt">
-                  <span style="color: #303f4a; font-size: 16px">{{datadict.Maximummemory}} {{datadict.Typeofmemory}}</span>
+                  <span style="color: #303f4a; font-size: 16px">{{laptopSpecs.hard_drivesize}}</span>
                   Internal Storage
                 </div>
               </div>
@@ -103,7 +105,7 @@
                   /></noscript>
                 </div>
                 <div class="col spec-dt">
-                  <span style="color: #303f4a; font-size: 16px">{{datadict.InstalledRAM}}</span>
+                  <span style="color: #303f4a; font-size: 16px">{{laptopSpecs.installed_ram}}</span>
                   Memory (RAM)
                 </div>
               </div>
@@ -116,12 +118,17 @@
                   /></noscript>
                 </div>
                 <div class="col spec-dt">
-                  <span style="color: #303f4a; font-size: 16px">{{datadict.Screenresolution}}</span>
+                  <span style="color: #303f4a; font-size: 16px">{{laptopSpecs.screen_surface}}</span>
                   Dispaly
                 </div>
               </div>
             </li>
           </ul>
+        </div>
+        <div class="row">
+          <div class="col">
+            <a class="btn btn-danger btn-lg" target="_blank" href="{{laptop.link}}" role="button">Shop Now</a>
+          </div>
         </div>
       </div>
     </div>
@@ -133,7 +140,7 @@
     <div class="col-md-8">
       <div class="specifications-details-inner border">
         <div class="py-2">
-          <h2 class="phone-title">{{title_mega}}</h2>
+          <h2 class="phone-title">{{laptop.title}}</h2>
           <h3 class="phone-title-spec">Specifications</h3>
         </div>
         <div class="table-responsive">
@@ -141,7 +148,7 @@
             <tbody>
               <tr>
                 <td>Price in Pakistan</td>
-                <td>Rs. {{price_mega}}/-</td>
+                <td>Rs. {{laptop.price}}/-</td>
               </tr>
             </tbody>
           </table>
@@ -149,17 +156,25 @@
         <div class="table-responsive">
           <table class="table mb-1 table-striped">
             <tbody>
-              {% for head,data in datadictmega %}
+              {% if datadictmega %} {% for head,data in datadictmega %}
               <tr>
                 <td>{{head}}</td>
                 <td>{{data}}</td>
               </tr>
-              {% endfor %}
+              {% endfor %} {% else %} {% for head,data in datadictPaklap %}
+              <tr>
+                <td>{{head}}</td>
+                <td>{{data}}</td>
+              </tr>
+              {% endfor %} {% endif %}
               <tr></tr>
             </tbody>
           </table>
         </div>
       </div>
+    </div>
+    <div class="col-4">
+      <canvas width="300" height="300" id="laptopChart"></canvas>
     </div>
   </div>
 </div>
@@ -265,7 +280,32 @@
 
 {% endblock %} {% block script %}
 <script>
-  console.log("Hello world!");
+  var configLaptop = {
+    type: "pie",
+    data: {
+      datasets: [
+        {
+          data: ["{{laptopGraph.positive}}", "{{laptopGraph.negative}}", "{{laptopGraph.neutral}}"],
+          backgroundColor: ["rgb(0, 102, 255)", "rgb(117, 165, 255)", "#a3d3ff"],
+          label: "Laptop",
+        },
+      ],
+      labels: ["Positive", "Negative", "Neutral"],
+    },
+    options: {
+      responsive: false,
+    },
+  };
+
+  window.onload = function () {
+    var laptop = document.getElementById("laptopChart").getContext("2d");
+    window.myPie = new Chart(laptop, configLaptop);
+  };
+
+  function alertWishlist() {
+    alert("Please Login to add item in a Wishlist");
+  }
+
   function senddata(laptop) {
     function getCookie(name) {
       let cookieValue = null;
@@ -301,24 +341,24 @@
       },
     });
   }
-  function addWishlist(laptop) {
-    senddata(laptop);
-  }
-  function removeWishlist(laptop) {
-    senddata(laptop);
-  }
+  //function addWishlist(laptop) {
+  //  senddata(laptop);
+  //}
+  //function removeWishlist(laptop) {
+  //  senddata(laptop);
+  //}
   let wishlistButton = document.getElementById("Wishlist-btn");
   wishlistButton.addEventListener("click", function () {
     if (this.classList.contains("active")) {
       let laptop = this.dataset.laptop;
-      removeWishlist(laptop);
+      senddata(laptop);
       this.classList.remove("active");
       this.classList.remove("btn-success");
       this.classList.add("btn-primary");
     } else {
       if (this.classList.contains("btn-primary")) {
         let laptop = this.dataset.laptop;
-        addWishlist(laptop);
+        senddata(laptop);
         this.classList.add("active");
         this.classList.remove("btn-primary");
         this.classList.add("btn-success");

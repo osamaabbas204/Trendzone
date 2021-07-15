@@ -1,65 +1,72 @@
-  <!-- Site footer -->
-  <footer class="site-footer">
-    <div class="container">
-      <div class="row">
-        <div class="col-sm-12 col-md-6">
-          <h6>About</h6>
-          <p class="text-justify">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nulla quaerat ipsum, tempore, officiis ea nobis alias ab quas soluta distinctio neque, dolorum laborum! Ratione nulla, impedit doloribus beatae unde quasi.</p>
-        </div>
+<!-- Site footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <h6>About</h6>
 
-        <div class="col-xs-6 col-md-2">
-          <h6>Mobile</h6>
-          <ul class="footer-links">
-            <li><a href="#">Samsung</a></li>
-            <li><a href="#">Apple</a></li>
-            <li><a href="#">Huaewaei</a></li>
-            <li><a href="#">Xiaomi</a></li>
-            <li><a href="#">Oppo</a></li>
-            <li><a href="#">Asus</a></li>
-          </ul>
-        </div>
-
-        <div class="col-xs-6 col-md-2">
-            <h6>Laptop</h6>
-            <ul class="footer-links">
-              <li><a href="#">Asus</a></li>
-              <li><a href="#">HP</a></li>
-              <li><a href="#">Dell</a></li>
-              <li><a href="#">Lenovo</a></li>
-              <li><a href="#">Microsoft</a></li>
-              <li><a href="#">Apple</a></li>
-            </ul>
-          </div>
-
-        <div class="col-xs-6 col-md-2">
-          <h6>Quick Links</h6>
-          <ul class="footer-links">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Top Trendz</a></li>
-            <li><a href="#">Compare</a></li>
-            <li><a href="#">Contact Us</a></li>
-            <li><a href="#">Signup/Login</a></li>
-          </ul>
-        </div>
+        <p class="text-justify">We provide high-quality branded, mobile devices for our customers. By visiting our website can check and compare the mobile phone prices in Pakistan.</p>
       </div>
-      <hr>
-    </div>
-    <div class="container">
-      <div class="row">
-        <div class="col-md-8 col-sm-6 col-xs-12">
-          <p class="copyright-text">Copyright &copy; 2021 All Rights Reserved by 
-       <a href="#">Trendzone</a>.
-          </p>
-        </div>
 
-        <div class="col-md-4 col-sm-6 col-xs-12">
-          <ul class="social-icons">
-            <li><a class="facebook" href="#"><i class="fa fa-facebook"></i></a></li>
-            <li><a class="twitter" href="#"><i class="fa fa-twitter"></i></a></li>
-            <li><a class="dribbble" href="#"><i class="fa fa-dribbble"></i></a></li>
-            <li><a class="linkedin" href="#"><i class="fa fa-linkedin"></i></a></li>   
-          </ul>
-        </div>
+      <div class="col-xs-6 col-md-2">
+        <h6>Mobile</h6>
+        <ul class="footer-links">
+          <li><a href="{% url 'devicelist' 'samsung_mobiles_prices' %}">Samsung</a></li>
+          <li><a href="{% url 'devicelist' 'apple' %}">Apple</a></li>
+          <li><a href="{% url 'devicelist' 'huawei' %}">Huawei</a></li>
+          <li><a href="{% url 'devicelist' 'xiaomi' %}">Xiaomi</a></li>
+          <li><a href="{% url 'devicelist' 'oppo' %}">Oppo</a></li>
+          <li><a href="{% url 'devicelist' 'asus' %}">Asus</a></li>
+        </ul>
+      </div>
+
+      <div class="col-xs-6 col-md-2">
+        <h6>Laptop</h6>
+        <ul class="footer-links">
+          <li><a href="{% url 'laptoplist' 'asus' %}">Asus</a></li>
+          <li><a href="{% url 'laptoplist' 'hp' %}">HP</a></li>
+          <li><a href="{% url 'laptoplist' 'dell' %}">Dell</a></li>
+          <li><a href="{% url 'laptoplist' 'lenovo' %}">Lenovo</a></li>
+          <li><a href="{% url 'laptoplist' 'microsoft' %}">Microsoft</a></li>
+          <li><a href="{% url 'laptoplist' 'apple' %}">Apple</a></li>
+        </ul>
+      </div>
+
+      <div class="col-xs-6 col-md-2">
+        <h6>Quick Links</h6>
+        <ul class="footer-links">
+          <li><a href="{% url 'home' %}">Home</a></li>
+          <li><a href="{% url 'trend' %}">Top Trendz</a></li>
+          <li><a href="{% url 'compareMobile' %}">Compare</a></li>
+          <li><a href="{% url 'contact' %}">Contact Us</a></li>
+          <li><a href="{% url 'signup' %}">Signup/Login</a></li>
+        </ul>
       </div>
     </div>
+    <hr />
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 col-sm-6 col-xs-12">
+        <p class="copyright-text">Copyright &copy; 2021 All Rights Reserved by <a href="{% url 'home' %}">Trendzone</a>.</p>
+      </div>
+
+      <div class="col-md-4 col-sm-6 col-xs-12">
+        <ul class="social-icons">
+          <li>
+            <a class="facebook" target="_blank" href="https://www.facebook.com/"><i class="fa fa-facebook"></i></a>
+          </li>
+          <li>
+            <a class="twitter" target="_blank" href="https://twitter.com/"><i class="fa fa-twitter"></i></a>
+          </li>
+          <li>
+            <a class="dribbble" target="_blank" href="#"><i class="fa fa-dribbble"></i></a>
+          </li>
+          <li>
+            <a class="linkedin" target="_blank" href="https://www.linkedin.com/"><i class="fa fa-linkedin"></i></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </footer>

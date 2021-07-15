@@ -1,4 +1,4 @@
-{% extends "Trendz/main.html" %} {%load static%} {% block style %}
+{% extends "Trendz/main.html" %} {% load static %} {% block style %}
 <style>
   *,
   ::after,
@@ -111,7 +111,7 @@
     color: blue;
   }
 </style>
-{% endblock style %} {% block title %} Trendzone {% endblock %} {% block body %}
+{% endblock style %} {% block title %}{% if phone1 or phone2 %}Compare {{phone1.title}} Vs {{phone2.title}}{% else %}Compare Mobile{% endif %}{% endblock %} {% block body %}
 <div class="container">
   <div class="row">
     <div class="col-md-9">

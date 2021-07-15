@@ -12,13 +12,14 @@ class Contact(models.Model):
 
 
 class Laptop(models.Model):
-    title = models.CharField(max_length=250)
+    title = models.CharField(max_length=350)
     price = models.CharField(max_length=50)
     image = models.CharField(max_length=200)
     tag1 = models.CharField(max_length=200)
     brand = models.CharField(max_length=50)
     site = models.CharField(max_length=50)
     status = models.CharField(max_length=50, null=True)
+    link = models.CharField(max_length=200, null=True)
 
     def __str__(self):
         return self.title
@@ -47,13 +48,13 @@ class Specification(models.Model):
     graphics_processor = models.CharField(max_length=200, null=True)
     backlight = models.CharField(max_length=200, null=True)
     screen_size = models.CharField(max_length=200, null=True)
-    screen_surface = models.CharField(max_length=200, null=True)
+    screen_surface = models.CharField(max_length=300, null=True)
     screen_resolution = models.CharField(max_length=200, null=True)
     touchscreen = models.CharField(max_length=200, null=True)
     color = models.CharField(max_length=200, null=True)
     fingerprint_reader = models.CharField(max_length=200, null=True)
     numeric_keyboard = models.CharField(max_length=200, null=True)
-    backlit_keyboard = models.CharField(max_length=200, null=True)
+    backlit_keyboard = models.CharField(max_length=300, null=True)
     bluetooth = models.CharField(max_length=200, null=True)
     lan = models.CharField(max_length=200, null=True)
     speed = models.CharField(max_length=200, null=True)

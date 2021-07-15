@@ -1,4 +1,4 @@
-{% extends "Trendz/main.html" %} {% block title %} Trendzone {% endblock %} {% block style %}
+{% extends "Trendz/main.html" %} {% block title %} Wishlist {% endblock %} {% block style %}
 <style>
   * {
     box-sizing: border-box;
@@ -189,7 +189,7 @@
       },
       success: function (data) {
         console.log(data);
-        setInterval("refreshPage()", 1000);
+        setInterval("refreshPage()", 500);
       },
       error: function (error) {
         console.log(error);

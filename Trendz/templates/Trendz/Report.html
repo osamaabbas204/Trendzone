@@ -1,6 +1,6 @@
 {% extends "Trendz/main.html" %} {% block style %}
 <style></style>
-{% endblock style %} {% block title %} Trendzone {% endblock %} {% block body %}
+{% endblock style %} {% block title %} Trendzone {% endblock %} {% block body %} {% if mobile %}
 <div class="container">
   <h3 class="my-3">Mobile Report</h3>
   <div class="row my-4">
@@ -42,7 +42,49 @@
     </div>
   </div>
 </div>
-{% endblock %} {% block script %}
+{% elif laptop %}
+<div class="container">
+  <h3 class="my-3">Laptop Report</h3>
+  <div class="row my-4">
+    <dov class="col-md-4">
+      <h3 class="mb-3">Macbook</h3>
+      <canvas width="300" height="300" id="samsung"></canvas>
+    </dov>
+    <div class="col-md-4">
+      <h3 class="mb-3">Microsoft</h3>
+      <canvas width="300" height="300" id="Apple"></canvas>
+    </div>
+    <div class="col-md-4">
+      <h3 class="mb-3">HP Laptop</h3>
+      <canvas width="300" height="300" id="Xiaomi"></canvas>
+    </div>
+  </div>
+  <div class="row my-4">
+    <dov class="col-md-4">
+      <h3 class="mb-3">Dell</h3>
+      <canvas width="300" height="300" id="oppo"></canvas>
+    </dov>
+    <div class="col-md-4">
+      <h3 class="mb-3">Lenovo</h3>
+      <canvas width="300" height="300" id="vivo"></canvas>
+    </div>
+    <div class="col-md-4">
+      <h3 class="mb-3">Asus</h3>
+      <canvas width="300" height="300" id="google"></canvas>
+    </div>
+  </div>
+  <div class="row my-4">
+    <dov class="col-md-4">
+      <h3 class="mb-3">Acer</h3>
+      <canvas width="300" height="300" id="huawei"></canvas>
+    </dov>
+    <div class="col-md-4">
+      <h3 class="mb-3">MSI Laptop</h3>
+      <canvas width="300" height="300" id="oneplus"></canvas>
+    </div>
+  </div>
+</div>
+{% endif %} {% endblock %} {% block script %}
 <script>
   var configSamsung = {
     type: "pie",

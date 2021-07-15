@@ -1,4 +1,4 @@
-{% extends "Trendz/main.html" %} {% block title %} Trendzone {% endblock %} {% block style %}
+{% extends "Trendz/main.html" %} {% block title %}Top Trends Mobile{% endblock %} {% block style %}
 <style>
   .block {
     height: 800px;
@@ -81,6 +81,28 @@
     color: #0984e3;
     font-weight: 700;
   }
+  .items-wrap {
+    padding-bottom: 20px;
+    scrollbar-width: thin;
+  }
+  .overflow-auto {
+    overflow: auto !important;
+  }
+  .flex-nowrap {
+    -ms-flex-wrap: nowrap !important;
+    flex-wrap: nowrap !important;
+  }
+  .items-wrap::-webkit-scrollbar {
+    height: 5px;
+    background-color: red;
+    cursor: ew-resize;
+  }
+  .items-wrap::-webkit-scrollbar-thumb {
+    background-color: rgba(127, 147, 174, 0.17);
+  }
+  .items-wrap::-webkit-scrollbar-track {
+    background-color: #fff;
+  }
 </style>
 {% endblock style %} {% block body %}
 <div class="container">
@@ -124,23 +146,65 @@
     </div>
   </div>
   <div class="row my-4">
-    <h3>Top Samsung Mobile</h3>
-    <div class="row justify-content-between">
-      {% for mobile in samsungMobiles %}
-      <div class="col-2">
-        <a class="product-item" href="{% url 'phonedetail' mobile.tag %}">
-          <div class="image"><img height="199px" width="149px" src="{{mobile.image}}" alt="Nothing Show" /></div>
-          {% if mobile.status == "None" %} {%else%}
-          <div class="status">{{mobile.status}}</div>
-          {% endif %}
-          <div class="brand-name">{{mobile.title}}</div>
-          <div class="price"><span>{{ mobile.price }}</span>RS</div>
-        </a>
+    <div class="row">
+      <h3>Top Samsung Mobile</h3>
+      <div class="row flex-nowrap overflow-auto mb-4 mb-md-0 items-wrap ml-0">
+        {% for mobile in samsungMobiles %}
+        <div class="col-6 col-sm-4 col-md-2 my-3 px-0 single-item">
+          <a class="product-item px-0 mx-0 my-0" href="{% url 'phonedetail' mobile.tag %}">
+            <div class="image"><img height="199px" width="149px" src="{{mobile.image}}" alt="Nothing Show" /></div>
+            <div class="price"><span>{{ mobile.price }}</span>RS</div>
+            <div class="brand-name">{{mobile.title}}</div>
+          </a>
+        </div>
+        {% endfor %}
       </div>
-      {% endfor %}
+    </div>
+    <div class="row">
+      <h3>Top Apple Mobile</h3>
+      <div class="row flex-nowrap overflow-auto mb-4 mb-md-0 items-wrap ml-0">
+        {% for mobile in apple %}
+        <div class="col-6 col-sm-4 col-md-2 my-3 px-0 single-item">
+          <a class="product-item px-0 mx-0 my-0" href="{% url 'phonedetail' mobile.tag %}">
+            <div class="image"><img height="199px" width="149px" src="{{mobile.image}}" alt="Nothing Show" /></div>
+            <div class="price"><span>{{ mobile.price }}</span>RS</div>
+            <div class="brand-name">{{mobile.title}}</div>
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="row">
+      <h3>Top oppo Mobile</h3>
+      <div class="row flex-nowrap overflow-auto mb-4 mb-md-0 items-wrap ml-0">
+        {% for mobile in oppo %}
+        <div class="col-6 col-sm-4 col-md-2 my-3 px-0 single-item">
+          <a class="product-item px-0 mx-0 my-0" href="{% url 'phonedetail' mobile.tag %}">
+            <div class="image"><img height="199px" width="149px" src="{{mobile.image}}" alt="Nothing Show" /></div>
+            <div class="price"><span>{{ mobile.price }}</span>RS</div>
+            <div class="brand-name">{{mobile.title}}</div>
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="row">
+      <h3>Top vivo Mobile</h3>
+      <div class="row flex-nowrap overflow-auto mb-4 mb-md-0 items-wrap ml-0">
+        {% for mobile in vivo %}
+        <div class="col-6 col-sm-4 col-md-2 my-3 px-0 single-item">
+          <a class="product-item px-0 mx-0 my-0" href="{% url 'phonedetail' mobile.tag %}">
+            <div class="image"><img height="199px" width="149px" src="{{mobile.image}}" alt="Nothing Show" /></div>
+            <div class="price"><span>{{ mobile.price }}</span>RS</div>
+            <div class="brand-name">{{mobile.title}}</div>
+          </a>
+        </div>
+        {% endfor %}
+      </div>
     </div>
   </div>
 </div>
+
 {% endblock %} {% block script %}
 <script>
   var configDaily = {

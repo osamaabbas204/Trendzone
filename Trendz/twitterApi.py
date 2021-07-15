@@ -34,8 +34,6 @@ def runtime(searchTerm):
         for tweet in tweets:
             # tweet's text
             analysis = TextBlob(tweet.text)
-            # adding up polarities to find the average later
-            polarity += analysis.sentiment.polarity
             # adding reaction of how people are reacting to find average later
             if (analysis.sentiment.polarity == 0):
                 neutral += 1
@@ -48,8 +46,7 @@ def runtime(searchTerm):
         positive = percentage(positive, NoOfTerms)
         negative = percentage(negative, NoOfTerms)
         neutral = percentage(neutral, NoOfTerms)
-        # finding average reaction
-        polarity = polarity / NoOfTerms
+
         # Data dictionary for each brand
         if(search == '#oppo'):
             oppo = {'positive': positive,
@@ -73,6 +70,30 @@ def runtime(searchTerm):
             googlepixel = {'positive': positive,
                            'negative': negative, 'neutral': neutral}
         elif(search == '#OnePlus'):
+            oneplus = {'positive': positive,
+                       'negative': negative, 'neutral': neutral}
+        elif(search == '#dell'):
+            oppo = {'positive': positive,
+                    'negative': negative, 'neutral': neutral}
+        elif(search == 'lenovo laptop'):
+            vivo = {'positive': positive,
+                    'negative': negative, 'neutral': neutral}
+        elif(search == 'macbook'):
+            samsung = {'positive': positive,
+                       'negative': negative, 'neutral': neutral}
+        elif(search == '#hplaptop'):
+            xiaomi = {'positive': positive,
+                      'negative': negative, 'neutral': neutral}
+        elif(search == '#microsoft #laptop'):
+            apple = {'positive': positive,
+                     'negative': negative, 'neutral': neutral}
+        elif(search == 'acer laptop'):
+            huawei = {'positive': positive,
+                      'negative': negative, 'neutral': neutral}
+        elif(search == 'asus laptop'):
+            googlepixel = {'positive': positive,
+                           'negative': negative, 'neutral': neutral}
+        elif(search == 'Msi laptop'):
             oneplus = {'positive': positive,
                        'negative': negative, 'neutral': neutral}
         # printing out data tweets
@@ -157,7 +178,7 @@ def dailytrends(device_name):
                       '#huawei', '#teampixel', '#OnePlus', 'smartphone #samsung']
     else:
         searchTerm = ['#dell', 'lenovo laptop', 'macbook', '#hplaptop',
-                      '#surfacebook', 'acer laptop', 'asus laptop', 'Msi laptop']
+                      '#microsoft #laptop', 'acer laptop', 'asus laptop', 'Msi laptop']
 
     NoOfTerms = 50
 

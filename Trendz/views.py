@@ -6,19 +6,23 @@ from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.core.paginator import Paginator
-from .scrap import scrapmobileviapages, scrapmobiledetail, scraplaptopshophive, scraplaptopmega, scraplaptopdetailmega
+from .scrap import scrapmobileviapages, scrapmobiledetail, scraplaptopshophive, scraplaptopmega, scraplaptopdetailmega, scrapdetailPaklap, priceoye
 from .twitterApi import runtime_productgraph, runtime
 from django.db.models import Q
 import re
 from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+import smtplib
+from email.message import EmailMessage
+
 
 # Create your views here.
 
 
 def home(request):
-    print("Hello World")
-
-    latest_mobile = Mobile.objects.all().filter(status="Upcoming")[:13]
+    latest_mobile = Mobile.objects.all().filter(status="latest")[:13]
+    print(latest_mobile)
     latestMobile1 = latest_mobile[0:6]
     latestMobile2 = latest_mobile[7:13]
     daily1 = MObiletrend.objects.get(brandName='#oppo', status="daily")
@@ -45,11 +49,11 @@ def home(request):
     dailyLap8 = Laptoptrend.objects.get(
         brandName='Msi laptop', status="daily")
 
-    popularMobile = Mobile.objects.filter(status="popular")[:5]
-    popularMac = Laptop.objects.filter(status="popular", brand="apple")[:5]
+    popularMobile = Mobile.objects.filter(status="popular")[:10]
+    popularMac = Laptop.objects.filter(status="popular", brand="apple")
     popularLaptop = Laptop.objects.filter(
         status="popular").exclude(brand="apple")
-    context = {"latestMobile1": latestMobile1, "latestMobile2": latestMobile2, "daily1": daily1, "daily2": daily2, "daily3": daily3, "daily4": daily4,
+    context = {"latestMobile": latest_mobile, "latestMobile1": latestMobile1, "latestMobile2": latestMobile2, "daily1": daily1, "daily2": daily2, "daily3": daily3, "daily4": daily4,
                "daily5": daily5, "daily6": daily6, "daily7": daily7, "daily8": daily8, "dailyLap1": dailyLap1, "dailyLap2": dailyLap2, "dailyLap3": dailyLap3, "dailyLap4": dailyLap4,
                "dailyLap5": dailyLap5, "dailyLap6": dailyLap6, "dailyLap7": dailyLap7, "dailyLap8": dailyLap8, "popularMobile": popularMobile, "popularMac": popularMac, "popularLaptop": popularLaptop}
 
@@ -88,21 +92,42 @@ def compareLaptop(request):
         if not lap1 == '':
             laptop1obj = Specification.objects.filter(
                 title__icontains=lap1)[:1]
-            for obj in laptop1obj:
-                laptop1 = obj
-                print(obj.title)
+            if not laptop1obj:
+                laptop1 = Laptop.objects.filter(title__icontains=lap1)[:1]
+                for laptop in laptop1:
+                    if laptop.site == "Mega":
+                        scraplaptopdetailmega(laptop.tag1)
+                    elif laptop.site == "Paklap":
+                        scrapdetailPaklap(laptop.tag1)
+                laptop1obj = Specification.objects.filter(
+                    title__icontains=lap1)[:1]
+                for obj in laptop1obj:
+                    laptop1 = obj
+            else:
+                for obj in laptop1obj:
+                    laptop1 = obj
         if not lap2 == '':
             laptop2obj = Specification.objects.filter(
                 title__icontains=lap2)[:1]
-            print(laptop2obj)
-            for obj in laptop2obj:
-                laptop2 = obj
-                print(obj.title)
+            if not laptop2obj:
+                laptop2 = Laptop.objects.filter(title__icontains=lap2)[:1]
+                for laptop in laptop2:
+                    if laptop.site == "Mega":
+                        scraplaptopdetailmega(laptop.tag1)
+                    elif laptop.site == "Paklap":
+                        scrapdetailPaklap(laptop.tag1)
+                laptop2obj = Specification.objects.filter(
+                    title__icontains=lap2)[:1]
+                for obj in laptop2obj:
+                    laptop2 = obj
+            else:
+                for obj in laptop2obj:
+                    laptop2 = obj
     return render(request, "Trendz/comp-Laptop.html", {"laptop1": laptop1, "laptop2": laptop2})
 
 
 def trendMobile(request):
-    context = {"daily": None}
+    context = {}
     if request.method == "POST":
         if request.POST.get("weekly"):
             weekly1 = MObiletrend.objects.get(
@@ -140,8 +165,15 @@ def trendMobile(request):
         print(context)
     samsungMobiles = Mobile.objects.filter(
         brand="samsung_mobiles_prices")[:6]
+    apple = Mobile.objects.filter(
+        brand="apple")[:6]
+    vivo = Mobile.objects.filter(
+        brand="vivo")[:6]
+    oppo = Mobile.objects.filter(
+        brand="oppo")[:6]
     print(samsungMobiles)
-    context.update({"samsungMobiles": samsungMobiles})
+    context.update({"samsungMobiles": samsungMobiles,
+                    "apple": apple, "oppo": oppo, "vivo": vivo})
 
     return render(request, "Trendz/trendsMobile.html", context)
 
@@ -184,10 +216,17 @@ def trendLaptop(request):
             brandName='Msi laptop', status="daily")
         context = {"daily1": daily1, "daily2": daily2, "daily3": daily3, "daily4": daily4,
                    "daily5": daily5, "daily6": daily6, "daily7": daily7, "daily8": daily8}
+        hp = Laptop.objects.filter(brand="hp")[:6]
+        dell = Laptop.objects.filter(brand="dell")[:6]
+        lenovo = Laptop.objects.filter(brand="lenovo")[:6]
+        apple = Laptop.objects.filter(brand="apple")[:6]
+        context.update({"hp": hp,
+                        "dell": dell, "lenovo": lenovo, "apple": apple})
     return render(request, "Trendz/trendsLaptop.html", context)
 
 
 def contact(request):
+
     if request.method == 'POST':
         fm = ContactForm(request.POST)
         if fm.is_valid():
@@ -196,50 +235,61 @@ def contact(request):
             ms = fm.cleaned_data['message']
             reg = Contact(name=nm, email=em, message=ms)
             reg.save()
-            messages.success(request, 'Form submission successful')
+            messages.success(request, 'Thankyou for contacting us')
     else:
         fm = ContactForm()
     return render(request, "Trendz/contact.html", {'form': fm})
 
 
 def loginpage(request):
+    if not request.user.is_authenticated:
+        if request.method == 'POST':
+            username = request.POST.get('username')
+            password = request.POST.get('password')
 
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+            user = authenticate(request, username=username, password=password)
 
-        user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('home')
+            else:
+                messages.info(request, 'Usrname or Password is incorrect ')
 
-        if user is not None:
-            login(request, user)
-            return redirect('home')
-        else:
-            messages.info(request, 'Usrname or Password is incorrect ')
-
-    context = {}
-    return render(request, "Trendz/login.html", context)
+        context = {}
+        return render(request, "Trendz/login.html", context)
+    else:
+        return redirect('home')
 
 
 def logoutuser(request):
-    logout(request)
-    return redirect('home')
+    if request.user.is_authenticated:
+        logout(request)
+        return redirect('home')
+    else:
+        return redirect('home')
 
 
 def signuppage(request):
 
-    form = CreateUserForm()
-    if request.method == 'POST':
-        form = CreateUserForm(request.POST)
-        if form.is_valid():
-            form.save()
-
-            user = form.cleaned_data.get('username')
-            messages.success(request, 'Account was created for ' + user)
-
-            return redirect('login')
-
-    context = {'form': form}
-    return render(request, "Trendz/signup.html", context)
+    if not request.user.is_authenticated:
+        form = CreateUserForm()
+        if request.method == 'POST':
+            form = CreateUserForm(request.POST)
+            if form.is_valid():
+                user = form.cleaned_data.get('username')
+                if re.search('[a-zA-Z0-9]{7}', user):
+                    form.save()
+                    user = form.cleaned_data.get('username')
+                    messages.success(
+                        request, 'Account was created for ' + user)
+                    return redirect('login')
+                else:
+                    messages.info(
+                        request, 'Username must contain 7 characters and Do not contain Special Characters')
+        context = {'form': form}
+        return render(request, "Trendz/signup.html", context)
+    else:
+        return redirect('home')
 
 
 def devicelistpage(request, brand_name):
@@ -247,77 +297,125 @@ def devicelistpage(request, brand_name):
     page_obj = None
     Brand = None
     if brand_name == "latest-phone":
-        Query = Mobile.objects.all().filter(status="Upcoming").order_by('id')
+        Query = Mobile.objects.all().filter(status="latest").order_by('id')
         paginator = Paginator(Query, 20)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
+        print(Query)
+        return render(request, "Trendz/devicelist.html", {'page_obj': page_obj, "Brand": Brand})
     elif brand_name == "popular-phone":
         Query = Mobile.objects.all().filter(status="popular").order_by('id')
         paginator = Paginator(Query, 20)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
-    else:
+        return render(request, "Trendz/devicelist.html", {'page_obj': page_obj, "Brand": Brand})
+    elif Mobile.objects.filter(brand=brand_name):
         Query = Mobile.objects.all().filter(brand=brand_name).order_by('id')
         for Obj in Query[:1]:
             Brand = Obj
+            print(Brand.brand)
         paginator = Paginator(Query, 20)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
-
-    return render(request, "Trendz/devicelist.html", {'page_obj': page_obj, "Brand": Brand})
+        return render(request, "Trendz/devicelist.html", {'page_obj': page_obj, "Brand": Brand})
+    else:
+        return redirect('home')
 
 
 def phonedetailpage(request, device_name):
-
-    context = scrapmobiledetail(device_name)
-    mobile = Mobile.objects.get(tag=device_name)
-    mobileGraph = runtime_productgraph(mobile.title)
-    wishlist = Wishlist.objects.filter(mobile=mobile)
-    comments = Mobilecomment.objects.filter(mobile=mobile, parent=None)
-    replies = Mobilecomment.objects.filter(mobile=mobile).exclude(parent=None)
-    context.update(
-        {'comments': comments, 'mobile': mobile, 'replies': replies, "wishlist": wishlist, "mobileGraph": mobileGraph})
-    return render(request, "Trendz/phonedetail.html", context)
+    if Mobile.objects.filter(tag=device_name):
+        context = scrapmobiledetail(device_name)
+        mobile = Mobile.objects.get(tag=device_name)
+        price1 = priceoye(device_name)
+        print(price1)
+        mobileGraph = runtime_productgraph(mobile.title)
+        wishlist = Wishlist.objects.filter(mobile=mobile)
+        comments = Mobilecomment.objects.filter(mobile=mobile, parent=None)
+        replies = Mobilecomment.objects.filter(
+            mobile=mobile).exclude(parent=None)
+        context.update(
+            {'comments': comments, 'mobile': mobile, 'replies': replies, "wishlist": wishlist, "mobileGraph": mobileGraph, "price1": price1})
+        return render(request, "Trendz/phonedetail.html", context)
+    else:
+        return redirect('home')
 
 
 def laptoplistpage(request, brand_name):
 
-    query = Laptop.objects.all().filter(brand=brand_name).order_by('id')
-    paginator = Paginator(query, 20)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
-    return render(request, "Trendz/devicelist.html", {'page_obj1': page_obj})
+    if Laptop.objects.filter(brand=brand_name):
+        query = Laptop.objects.all().filter(brand=brand_name).order_by('id')
+        for Obj in query[:1]:
+            brandLap = Obj
+            print(brandLap.brand)
+        paginator = Paginator(query, 20)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        return render(request, "Trendz/devicelist.html", {'page_obj1': page_obj, "brandLap": brandLap})
+    else:
+        return redirect('home')
 
 
 def laptopdetailpage(request, device_name):
-
-    laptop = Laptop.objects.get(tag1=device_name)
-    if laptop.site == "Mega":
-        context = scraplaptopdetailmega(device_name)
+    if Laptop.objects.filter(tag1=device_name):
+        laptop = Laptop.objects.get(tag1=device_name)
+        title = laptop.title
+        titleList = title.split()
+        finalTitle = f"{titleList[0]} {titleList[1]} {titleList[2]}"
+        laptopGraph = runtime_productgraph(finalTitle)
+        if laptop.site == "Mega":
+            context = scraplaptopdetailmega(device_name)
+        elif laptop.site == "Paklap":
+            context = scrapdetailPaklap(device_name)
+        laptopSpecs = Specification.objects.get(tag=device_name)
+        wishlist = Wishlist.objects.filter(laptop=laptop)
+        comments = Laptopcomment.objects.filter(laptop=laptop, parent=None)
+        replies = Laptopcomment.objects.filter(
+            laptop=laptop).exclude(parent=None)
+        context.update({"wishlist": wishlist, "laptop": laptop,
+                        "comments": comments, "replies": replies, "laptopSpecs": laptopSpecs, "laptopGraph": laptopGraph})
+        return render(request, 'Trendz/laptopdetail.html', context)
     else:
-        None
-    print(laptop.id)
-    wishlist = Wishlist.objects.filter(laptop=laptop)
-    comments = Laptopcomment.objects.filter(laptop=laptop, parent=None)
-    replies = Laptopcomment.objects.filter(laptop=laptop).exclude(parent=None)
-    context.update({"wishlist": wishlist, "laptop": laptop,
-                    "comments": comments, "replies": replies})
-
-    return render(request, 'Trendz/laptopdetail.html', context)
+        return redirect('home')
 
 
 def searchview(request):
 
+    mobiles = None
+    laptops = None
     search = request.GET.get('search')
     if search == "":
         mobiles = ""
         laptops = ''
     else:
-        mobiles = Mobile.objects.filter(Q(title__icontains=search))
-
-        laptops = Laptop.objects.filter(Q(title__icontains=search))
-    print(mobiles)
+        if "hp" in search:
+            laptops = Laptop.objects.filter(
+                Q(title__icontains=search))
+        if re.search('[a-zA-Z0-9]{3}', search):
+            if not search.isdigit():
+                mobiles = Mobile.objects.filter(Q(title__icontains=search))
+                laptops = Laptop.objects.filter(Q(title__icontains=search))
+        if not mobiles:
+            if not laptops:
+                searchlist = search.split(" ")
+                if len(searchlist) > 1:
+                    for search1 in searchlist:
+                        if "hp" in search1:
+                            laptops = Laptop.objects.filter(
+                                Q(title__icontains=search1))
+                            continue
+                        if re.search('[a-zA-Z0-9]{3}', search1):
+                            if not search1.isdigit():
+                                print(search1)
+                                print(
+                                    "-----------------------------------------------------------------------------------------------------------")
+                                mobile1 = Mobile.objects.filter(
+                                    Q(title__icontains=search1))
+                                laptop1 = Laptop.objects.filter(
+                                    Q(title__icontains=search1))
+                                mobiles |= mobile1
+                                laptops |= laptop1
+                                print(mobiles)
+                                print(laptops)
     return render(request, 'Trendz/search.html', {'mobiles': mobiles, 'laptops': laptops})
 
 
@@ -419,6 +517,7 @@ def wishlistdata(request):
     return JsonResponse(data)
 
 
+@login_required(login_url='login')
 def wishlist(request):
     wishlistLaptop = None
     wishlistMobile = None
@@ -439,6 +538,37 @@ def Report(request, Name):
         searchTerm = ['#oppo', '#vivo', '#xiaomi', 'Apple iphone',
                       '#huawei', '#teampixel', '#OnePlus', '#samsung']
         context = runtime(searchTerm)
+        context.update({"mobile": True})
+        print(context)
+    elif Name == "Laptop":
+        searchTerm = ['#dell', 'lenovo laptop', 'macbook', '#hplaptop',
+                      '#microsoft #laptop', 'acer laptop', 'asus laptop', 'Msi laptop']
+        context = runtime(searchTerm)
+        context.update({"laptop": True})
         print(context)
 
     return render(request, "Trendz/Report.html", context)
+
+
+def email_notification(subject, body, to):
+    msg = EmailMessage()
+    msg.set_content(body)
+    msg['subject'] = subject
+    msg['to'] = to
+    sender_email = "webtrendzone2021@gmail.com"
+    msg['from'] = sender_email
+    password = "skype97531"
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.starttls()
+    server.login(sender_email, password)
+    server.send_message(msg)
+
+    server.quit()
+
+
+def email():
+    userList = User.objects.all()
+    for user in userList:
+        print("send Notification email to ", user.email)
+        email_notification(
+            "Notication!", f"hey {user.username}\nMarket Trendz on our Website are Updated Now.To check the latest Trendz Visit our Website Now\n", user.email)

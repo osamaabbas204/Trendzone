@@ -111,7 +111,7 @@
     color: blue;
   }
 </style>
-{% endblock style %} {% block title %} Trendzone {% endblock %} {% block body %}
+{% endblock style %} {% block title %}{% if laptop1 or laptop2 %}compare {{laptop1.title}} vs {{laptop2.title}}{% else %}Compare Laptop{% endif %}{% endblock %} {% block body %}
 <div class="container">
   <div class="row">
     <div class="col-md-9">
@@ -147,13 +147,13 @@
       <div class="row">
         <div class="col-6">
           <div class="image">
-            <img height="199px" width="149px" src="{{laptop1.laptop.image}}" alt="" />
+            <img height="199px" width="250px" src="{{laptop1.laptop.image}}" alt="" />
           </div>
           <h3 class="brand-name">{{laptop1.title}}</h3>
         </div>
         <div class="col-6">
           <div class="image">
-            <img height="199px" width="149px" src="{{laptop2.laptop.image}}" alt="" />
+            <img height="199px" width="250px" src="{{laptop2.laptop.image}}" alt="" />
           </div>
           <h3 class="brand-name">{{laptop2.title}}</h3>
         </div>

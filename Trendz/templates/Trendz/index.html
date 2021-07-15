@@ -1,4 +1,4 @@
-{% extends "Trendz/main.html" %} {% load static %} {% block style %}
+{% extends "Trendz/main.html" %} {% load static %}{% block style %}
 <style>
   * {
     box-sizing: border-box;
@@ -13,12 +13,10 @@
   .product-item {
     display: flex;
     width: 180px;
-    height: 300px;
     list-style: none;
     flex-direction: column;
     text-decoration: none;
     background-color: transparent;
-    margin-right: 25px;
   }
   .image {
     display: flex;
@@ -49,54 +47,70 @@
     color: #0984e3;
     font-weight: 700;
   }
+  .items-wrap {
+    padding-bottom: 20px;
+    scrollbar-width: thin;
+  }
+  .overflow-auto {
+    overflow: auto !important;
+  }
+  .flex-nowrap {
+    -ms-flex-wrap: nowrap !important;
+    flex-wrap: nowrap !important;
+  }
+  .items-wrap::-webkit-scrollbar {
+    height: 5px;
+    background-color: red;
+    cursor: ew-resize;
+  }
+  .items-wrap::-webkit-scrollbar-thumb {
+    background-color: rgba(127, 147, 174, 0.17);
+  }
+  .items-wrap::-webkit-scrollbar-track {
+    background-color: #fff;
+  }
 </style>
-{% endblock style %} {% block title %} Trendzone {% endblock %} {% block body %}
+{% endblock style %}{% block title %}Device Trends- Pakistan's latest Device trends{% endblock %} {% block body %}
 
-<div class="container my-5">
-  <a style="text-decoration: none" href="{% url 'devicelist' 'latest-phone' %}"><h3>Latest Mobile</h3></a>
-  <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
-    <div class="carousel-inner">
-      <div class="carousel-item active">
-        <div class="row">
-          {% for mobile in latestMobile1 %}
-          <div class="col-2">
-            <a class="product-item" href="{% url 'phonedetail' mobile.tag %}">
-              <div class="image"><img height="199px" width="149px" src="{{mobile.image}}" alt="Nothing Show" /></div>
-              {% if mobile.status == "None" %} {%else%}
-              <div class="status">{{mobile.status}}</div>
-              {% endif %}
-              <div class="brand-name">{{mobile.title}}</div>
-              <div class="price"><span>{{ mobile.price }}</span>RS</div>
-            </a>
-          </div>
-          {% endfor %}
-        </div>
-      </div>
-      <div class="carousel-item">
-        <div class="row">
-          {% for mobile in latestMobile2 %}
-          <div class="col-2">
-            <a class="product-item" href="{% url 'phonedetail' mobile.tag %}">
-              <div class="image"><img height="199px" width="149px" src="{{mobile.image}}" alt="Nothing Show" /></div>
-              {% if mobile.status == "None" %} {%else%}
-              <div class="status">{{mobile.status}}</div>
-              {% endif %}
-              <div class="brand-name">{{mobile.title}}</div>
-              <div class="price"><span>{{ mobile.price }}</span>RS</div>
-            </a>
-          </div>
-          {% endfor %}
-        </div>
-      </div>
+<div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active" aria-label="Slide 1" aria-current="true"></button>
+    <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1" aria-label="Slide 2" class=""></button>
+    <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="2" aria-label="Slide 3" class=""></button>
+  </div>
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img height="400px" width="100%" src="{% static '/images/Poster1.jpg' %}" alt="" />
     </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Next</span>
-    </button>
+    <div class="carousel-item">
+      <img height="400px" width="100%" src="{% static '/images/Poster2.jpg' %}" alt="" />
+    </div>
+    <div class="carousel-item">
+      <img height="400px" width="100%" src="{% static '/images/Poster3.jpg' %}" alt="" />
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+
+<div class="container my-4">
+  <a style="text-decoration: none" href="{% url 'devicelist' 'latest-phone' %}"><h3>Latest Mobile</h3></a>
+  <div class="row flex-nowrap overflow-auto mb-4 mb-md-0 items-wrap ml-0">
+    {% for mobile in latestMobile %}
+    <div class="col-6 col-sm-4 col-md-2 my-3 px-0 single-item">
+      <a class="product-item px-0 mx-0 my-0" href="{% url 'phonedetail' mobile.tag %}">
+        <div class="image"><img height="199px" width="149px" src="{{mobile.image}}" alt="Nothing Show" /></div>
+        <div class="price"><span>{{ mobile.price }}</span>RS</div>
+        <div class="brand-name">{{mobile.title}}</div>
+      </a>
+    </div>
+    {% endfor %}
   </div>
 </div>
 
@@ -107,33 +121,31 @@
     </div>
     <div class="col-md-8">
       <a style="text-decoration: none" href="{% url 'devicelist' 'popular-phone' %}"><h3>Popular Mobile</h3></a>
-      <div class="row justify-content-between">
+      <div class="row flex-nowrap overflow-auto mb-4 mb-md-0 items-wrap ml-0">
         {% for mobile in popularMobile %}
-        <div class="col-2">
-          <a class="product-item" href="{% url 'phonedetail' mobile.tag %}">
+        <div class="col-6 col-sm-4 col-md-3 my-3 px-0 single-item">
+          <a class="product-item px-0 mx-0 my-0" href="{% url 'phonedetail' mobile.tag %}">
             <div class="image"><img height="199px" width="149px" src="{{mobile.image}}" alt="Nothing Show" /></div>
-            {% if mobile.status == "None" %} {%else%}
-            <div class="status">{{mobile.status}}</div>
-            {% endif %}
-            <div class="brand-name">{{mobile.title}}</div>
             <div class="price"><span>{{ mobile.price }}</span>RS</div>
+            <div class="brand-name">{{mobile.title}}</div>
           </a>
         </div>
         {% endfor %}
       </div>
     </div>
   </div>
+
   <div class="row my-4">
     <div class="col-md-4">
       <canvas id="dailyGraph"></canvas>
     </div>
     <div class="col-md-8">
       <h3>Popular Macbook</h3>
-      <div class="row justify-content-between">
+      <div class="row flex-nowrap overflow-auto mb-4 mb-md-0 items-wrap ml-0">
         {% for Mac in popularMac %}
-        <div class="col-2">
-          <a class="product-item" href="{% url 'laptopdetail' Mac.tag1 %}">
-            <div class="image"><img height="199px" width="149px" src="{{Mac.image}}" alt="Nothing Show" /></div>
+        <div class="col-8 col-sm-6 col-md-4 my-3 px-0 single-item">
+          <a class="product-item" style="width: 210px" href="{% url 'laptopdetail' Mac.tag1 %}">
+            <div class="image"><img height="199px" width="190px" src="{{Mac.image}}" alt="Nothing Show" /></div>
             <div class="price"><span>{{ Mac.price }}</span></div>
             <div class="brand-name">{{Mac.title}}</div>
           </a>
@@ -142,13 +154,13 @@
       </div>
     </div>
   </div>
-  <div class="row">
+  <div class="row mb-4">
     <h3>Popular Laptop</h3>
-    <div class="row justify-content-between">
+    <div class="row flex-nowrap overflow-auto mb-4 mb-md-0 items-wrap ml-0">
       {% for Laptop in popularLaptop %}
-      <div class="col-2">
-        <a class="product-item" href="{% url 'laptopdetail' Laptop.tag1 %}">
-          <div class="image"><img height="199px" width="149px" src="{{Laptop.image}}" alt="Nothing Show" /></div>
+      <div class="col-8 col-sm-4 col-md-3 my-3 px-0 single-item">
+        <a class="product-item" style="width: 210px" href="{% url 'laptopdetail' Laptop.tag1 %}">
+          <div class="image"><img height="199px" width="190px" src="{{Laptop.image}}" alt="Nothing Show" /></div>
           <div class="price"><span>{{ Laptop.price }}</span></div>
           <div class="brand-name">{{Laptop.title}}</div>
         </a>
@@ -189,7 +201,7 @@
           label: "Daily Laptop Trends",
         },
       ],
-      labels: ["Oppo", "Vivo", "Xiaomi", "Apple", "Huaewai", "Google Pixel", "OnePlus", "Samsung"],
+      labels: ["Dell", "Lenovo", "Macbook", "hp", "Microsoft", "Acer", "Asus", "MSI"],
     },
     options: {
       responsive: true,

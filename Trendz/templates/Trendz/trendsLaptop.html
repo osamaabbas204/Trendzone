@@ -1,4 +1,4 @@
-{% extends "Trendz/main.html" %} {% block title %} Trendzone {% endblock %} {% block style %}
+{% extends "Trendz/main.html" %} {% block title %}Top Trends Laptop{% endblock %} {% block style %}
 <style>
   .block {
     height: 800px;
@@ -32,6 +32,67 @@
   form {
     display: inline;
   }
+  .product-item {
+    display: flex;
+    width: 180px;
+    height: 300px;
+    list-style: none;
+    flex-direction: column;
+    text-decoration: none;
+    background-color: transparent;
+    margin-right: 25px;
+  }
+  .image {
+    display: flex;
+    justify-content: center;
+  }
+  .status {
+    font-size: 11px;
+    color: #a80500;
+    text-align: center;
+    margin-top: 0px;
+    font-weight: 600;
+  }
+  .brand-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: #303f4a;
+    text-align: center;
+    overflow: hidden;
+    line-height: 1.5em;
+    height: 3em;
+  }
+  .price {
+    text-align: center;
+    font-size: 16px;
+    color: #303f4a;
+  }
+  .price span {
+    color: #0984e3;
+    font-weight: 700;
+  }
+  .items-wrap {
+    padding-bottom: 20px;
+    scrollbar-width: thin;
+  }
+  .overflow-auto {
+    overflow: auto !important;
+  }
+  .flex-nowrap {
+    -ms-flex-wrap: nowrap !important;
+    flex-wrap: nowrap !important;
+  }
+  .items-wrap::-webkit-scrollbar {
+    height: 5px;
+    background-color: red;
+    cursor: ew-resize;
+  }
+  .items-wrap::-webkit-scrollbar-thumb {
+    background-color: rgba(127, 147, 174, 0.17);
+  }
+  .items-wrap::-webkit-scrollbar-track {
+    background-color: #fff;
+  }
 </style>
 {% endblock style %} {% block body %}
 <div class="container">
@@ -48,6 +109,7 @@
         </a>
       </div>
     </div>
+
     <div class="col-2 my-4">
       <a class="btn btn-outline-success" href="{% url 'Report' 'Laptop' %}" role="button">Laptop Report</a>
     </div>
@@ -72,6 +134,75 @@
       {% else %}
       <canvas id="weeklyGraph"></canvas>
       {% endif %}
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="col">
+      {% if daily1 %}
+      <canvas id="dailyGraph"></canvas>
+      {% else %}
+      <canvas id="weeklyGraph"></canvas>
+      {% endif %}
+    </div>
+  </div>
+  <div class="row my-4">
+    <div class="row">
+      <h3>Top HP Laptop</h3>
+      <div class="row flex-nowrap overflow-auto mb-4 mb-md-0 items-wrap ml-0">
+        {% for laptop in hp %}
+        <div class="col-6 col-sm-4 col-md-2 my-3 px-0 single-item">
+          <a class="product-item" style="width: 210px" href="{% url 'laptopdetail' laptop.tag1 %}">
+            <div class="image"><img height="199px" width="190px" src="{{laptop.image}}" alt="Nothing Show" /></div>
+            <div class="price"><span>{{ laptop.price }}</span></div>
+            <div class="brand-name">{{laptop.title}}</div>
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="row">
+      <h3>Top Apple Laptop</h3>
+      <div class="row flex-nowrap overflow-auto mb-4 mb-md-0 items-wrap ml-0">
+        {% for laptop in apple %}
+        <div class="col-6 col-sm-4 col-md-2 my-3 px-0 single-item">
+          <a class="product-item" style="width: 210px" href="{% url 'laptopdetail' laptop.tag1 %}">
+            <div class="image"><img height="199px" width="190px" src="{{laptop.image}}" alt="Nothing Show" /></div>
+            <div class="price"><span>{{ laptop.price }}</span></div>
+            <div class="brand-name">{{laptop.title}}</div>
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="row">
+      <h3>Top DELL Laptop</h3>
+      <div class="row flex-nowrap overflow-auto mb-4 mb-md-0 items-wrap ml-0">
+        {% for laptop in dell %}
+        <div class="col-6 col-sm-4 col-md-2 my-3 px-0 single-item">
+          <a class="product-item" style="width: 210px" href="{% url 'laptopdetail' laptop.tag1 %}">
+            <div class="image"><img height="199px" width="190px" src="{{laptop.image}}" alt="Nothing Show" /></div>
+            <div class="price"><span>{{ laptop.price }}</span></div>
+            <div class="brand-name">{{laptop.title}}</div>
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="row">
+      <h3>Top Lenovo Laptop</h3>
+      <div class="row flex-nowrap overflow-auto mb-4 mb-md-0 items-wrap ml-0">
+        {% for laptop in lenovo %}
+        <div class="col-6 col-sm-4 col-md-2 my-3 px-0 single-item">
+          <a class="product-item" style="width: 210px" href="{% url 'laptopdetail' laptop.tag1 %}">
+            <div class="image"><img height="199px" width="190px" src="{{laptop.image}}" alt="Nothing Show" /></div>
+            <div class="price"><span>{{ laptop.price }}</span></div>
+            <div class="brand-name">{{laptop.title}}</div>
+          </a>
+        </div>
+        {% endfor %}
+      </div>
     </div>
   </div>
 </div>
@@ -107,7 +238,7 @@
           label: "Daily Laptop Trends",
         },
       ],
-      labels: ["Oppo", "Vivo", "Xiaomi", "Apple", "Huaewai", "Google Pixel", "OnePlus", "Samsung"],
+      labels: ["Dell", "Lenovo", "Macbook", "hp", "Microsoft", "Acer", "Asus", "MSI"],
     },
     options: {
       responsive: true,
@@ -135,7 +266,7 @@
           label: "Weekly Laptop Trends",
         },
       ],
-      labels: ["Oppo", "Vivo", "Xiaomi", "Apple", "Huaewai", "Google Pixel", "OnePlus", "Samsung"],
+      labels: ["Dell", "Lenovo", "Macbook", "hp", "Microsoft", "Acer", "Asus", "MSI"],
     },
     options: {
       responsive: true,
